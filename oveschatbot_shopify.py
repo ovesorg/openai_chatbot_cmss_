@@ -38,8 +38,8 @@ def get_json(url, page):
         })
         headers = {
           'Content-Type': 'application/json',
-          'X-Shopify-Storefront-Access-Token': 'c7d58bb21938849add72ce28c71303f3',
-          'X-Shopify-Api-Version': '2023-04'
+          'X-Shopify-Storefront-Access-Token': 'access token',
+          'X-Shopify-Api-Version': 'version year'
         }
         response = requests.request("POST", url, headers=headers, data=payload)
         products_json = response.text[20:-2]
@@ -53,6 +53,7 @@ def get_json(url, page):
         #print(products_dict)
         OUTPUT_DIR= os.getcwd()
         f = open(os.path.join(OUTPUT_DIR, 'shopifyy_data.csv'), 'w')
+        f.write('')
         df = pd.DataFrame.from_dict(products_dict['nodes'])
         df.to_csv("shopifyy_data.csv",index = True, header = True,encoding="utf8")
         print(df)
@@ -120,9 +121,9 @@ loader = CSVLoader('shopifyy_data.csv',encoding="utf8")
 doc = loader.load()
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=2000, chunk_overlap=400)
 docs = text_splitter.split_documents(doc)
-embeddings = OpenAIEmbeddings(openai_api_key="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")
+embeddings = OpenAIEmbeddings(openai_api_key="open_api_key")
 db = Chroma.from_documents(docs, embeddings)
-llm = OpenAI(temperature=0.8, openai_api_key="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")
+llm = OpenAI(temperature=0.8, openai_api_key="open_api_key")
 retriever = db.as_retriever()
 history = [{'customer':'你好','ovsmart':'你好，有什么可以帮到你的吗？'},{'customer':'hello','ovsmart':'Hi there, how can I help you?'}]
 template = """
