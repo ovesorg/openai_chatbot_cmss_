@@ -10,14 +10,15 @@ from langchain.memory import ConversationBufferMemory
 from langchain import PromptTemplate
 from langchain.chains import ConversationChain
 from langchain.retrievers import TFIDFRetriever
-from docx import Document
+from getpass import getpass
+#from docx import Document
 import os
 OUTPUT_DIR= os.getcwd()
 f = open(os.path.join(OUTPUT_DIR, 'notiondata.txt'), 'w')
 f.write('This is the new file.')
 f.close()
-NOTION_TOKEN = "enter intergration token"
-DATABASE_ID = "enter database id"
+NOTION_TOKEN = getpass()
+DATABASE_ID = getpass()
 from langchain.document_loaders import NotionDBLoader
 loader = NotionDBLoader(NOTION_TOKEN, DATABASE_ID,request_timeout_sec=50)
 docs = loader.load()
@@ -29,6 +30,7 @@ for f in docs:
 o = str(sources)
 r = o.translate(str.maketrans('', '','{}'))
 v = r.replace('\t', '').replace('\n', '')
+print(v)
 file1 = open('notiondata.txt', 'w')
 file1.write(v)
 file1.close()
@@ -76,6 +78,3 @@ qa = RetrievalQA.from_chain_type(
 )
 while True:
     print(qa.run({"query": input('\n'"customer:")}))
-
-
-    
