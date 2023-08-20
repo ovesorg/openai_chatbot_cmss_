@@ -8,6 +8,7 @@ The challenges with this technology is the billing based on token, and even if y
 For this project, we will not dive much into vectordatabase, since we will only be giving a handful of data into the code to be processed. But in our coming projects we will use larger documents that will need us to break them into chunk hence o using vectorstores.
 
 ## Pre requisites
+- have git installed
 - python 3.9+
 - vs Code
 - Visual Studio Build Tools-latest.
