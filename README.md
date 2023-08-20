@@ -22,37 +22,19 @@ For this project, we will not dive much into vectordatabase, since we will only 
 clone the repo
 
 ```
-  https://github.com/Evans-musamia/openai_chatbot_cms_.git
+  git clone https://github.com/ovesorg/openai_chatbot_cmss_.git
 ```
+ install the requirements for the project by running the following on git terminal
 
-cd project name
-
 ```
-  cd openai_chatbot_cms_
+ pip install -r requirements.txt
 ```
+ 
 
 
 ## Run the project
 remember to replace 'openai_api-key' with your own relevant and legit keys.
 You can change the content by copying any text of less than one page and insert in the content and query against it.
-
-```
-  pip install langchain
-```
-
-```
-  pip install openai
-```
-
-```
-  pip install python-docx
-```
-```
-  pip install chromadb
-```
-```
-pip install getpass4
-````
 
 
 ```
