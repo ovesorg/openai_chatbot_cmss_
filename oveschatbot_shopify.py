@@ -21,6 +21,7 @@ url = "https://oves-2022.myshopify.com/api/2023-04/graphql.json"
 page =1
 def get_json(url, page):
     try:
+        print('shopify password')
         url = "https://oves-2022.myshopify.com/api/2023-04/graphql.json"
         payload = json.dumps({
           "query": "query Product($first: Int) {\n  products(first: $first) {\n    nodes {\n      id\n      title\n      handle\n      descriptionHtml\n      publishedAt\n      createdAt\n      updatedAt\n      vendor\n      tags\n      createdAt\n      \n    }\n  }\n}",
@@ -72,9 +73,11 @@ loader = DirectoryLoader(os.getcwd(), glob="**/*.csv")
 doc = loader.load()
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=2000, chunk_overlap=400)
 docs = text_splitter.split_documents(doc)
-embeddings = OpenAIEmbeddings(openai_api_key="open_api_key")
+print('openai_secret_key')
+h = getpass()
+embeddings = OpenAIEmbeddings(openai_api_key=h)
 db = Chroma.from_documents(docs, embeddings)
-llm = OpenAI(temperature=0.8, openai_api_key="open_api_key")
+llm = OpenAI(temperature=0.8, openai_api_key=h)
 retriever = db.as_retriever()
 history = [{'customer':'你好','ovsmart':'你好，有什么可以帮到你的吗？'},{'customer':'hello','ovsmart':'Hi there, how can I help you?'}]
 template = """
