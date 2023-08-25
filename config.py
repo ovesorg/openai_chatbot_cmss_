@@ -1,6 +1,11 @@
 import os
+from dotenv import load_dotenv
 
-OUTPUT_DIR = os.getcwd()
-NOTION_TOKEN = "secret_NmcIqCiUqQOJiQCaJJc21ZDy9DTW1LiEqYXNWV6XsCl"
-DATABASE_ID = "bb0c7872720742268f1eac3d55380059"
-OPENAI_API_KEY = "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"
+# Load the .env file
+load_dotenv()
+
+# Retrieve the values
+OUTPUT_DIR = os.getenv("OUTPUT_DIR", default=os.getcwd())
+NOTION_TOKEN = os.getenv("NOTION_TOKEN")
+DATABASE_ID = os.getenv("DATABASE_ID")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
