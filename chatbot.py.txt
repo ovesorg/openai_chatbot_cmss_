@@ -12,6 +12,7 @@ from langchain.chains import ConversationChain
 from langchain.retrievers import TFIDFRetriever
 from docx import Document
 import os
+
 OUTPUT_DIR= os.getcwd()
 f = open(os.path.join(OUTPUT_DIR, 'notiondata.txt'), 'w')
 f.write('This is the new file.')
@@ -19,6 +20,7 @@ f.close()
 NOTION_TOKEN = "enter intergration token"
 DATABASE_ID = "enter database id"
 from langchain.document_loaders import NotionDBLoader
+
 loader = NotionDBLoader(NOTION_TOKEN, DATABASE_ID,request_timeout_sec=50)
 docs = loader.load()
 sources = []
