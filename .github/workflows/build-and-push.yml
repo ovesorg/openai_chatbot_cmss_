@@ -5,7 +5,7 @@ on:
       - fastapi
 
 env:
-  IMAGE_NAME: openai_chatbot_cmss_
+  IMAGE_NAME: chatbot
   BRANCH_NAME: dev
 
 jobs:
