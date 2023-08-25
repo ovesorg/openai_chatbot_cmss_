@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  fastapi-app:
+    image: ghcr.io/ovesorg/chatbot:dev
+    ports:
+      - "8115:8111"
+    environment:
+      - SOME_ENV_VAR=value
