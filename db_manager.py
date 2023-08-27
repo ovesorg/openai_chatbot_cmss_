@@ -37,24 +37,19 @@ def query_elasticsearch(query_str):
         return response["hits"]["hits"]
     except NotFoundError:
         return []
-
-
+    
+    
 def add_to_pinecone(doc_id, vector, metadata={}):
     # Ensure vector is in the correct format. If it's a string, convert it back to a list.
-    if isinstance(vector, str):
-        try:
-            import json
-            vector = json.loads(vector)
-        except:
-            raise ValueError("Unable to parse the vector string back to a list.")
-
-    # If the vector is a numpy array, convert it to a list.
-    if isinstance(vector, np.ndarray):
-        vector = vector.tolist()
-
-    # Ensure the vector is actually a list (or similar iterable).
-    if not isinstance(vector, (list, tuple)):
-        raise ValueError(f"Vector is not a list or tuple but is: {type(vector)}")
+    def convert_to_list(obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        if isinstance(obj, list):
+            return [convert_to_list(item) for item in obj]
+        return obj
+    
+    # Convert ndarray vectors to lists
+    vector = convert_to_list(vector)
 
     print(f"Original vector dimension: {len(vector)}")  # Log the original vector's length
 
@@ -67,6 +62,34 @@ def add_to_pinecone(doc_id, vector, metadata={}):
     index.upsert(vectors=[(doc_id, vector, metadata)])
 
 
+# def add_to_pinecone(doc_id, vector, metadata={}):
+#     # Ensure vector is in the correct format. If it's a string, convert it back to a list.
+#     if isinstance(vector, str):
+#         try:
+#             import json
+#             vector = json.loads(vector)
+#         except:
+#             raise ValueError("Unable to parse the vector string back to a list.")
+
+#     # If the vector is a numpy array, convert it to a list.
+#     if isinstance(vector, np.ndarray):
+#         vector = vector.tolist()
+
+#     # Ensure the vector is actually a list (or similar iterable).
+#     if not isinstance(vector, (list, tuple)):
+#         raise ValueError(f"Vector is not a list or tuple but is: {type(vector)}")
+
+#     print(f"Original vector dimension: {len(vector)}")  # Log the original vector's length
+
+#     # Ensure the vector matches the expected dimension
+#     vector = truncate_or_pad_vector(vector, EXPECTED_DIMENSION)
+
+#     print(f"Modified vector dimension: {len(vector)}")  # Log the modified vector's length
+
+#     # Now upsert the vector into Pinecone
+#     index.upsert(vectors=[(doc_id, vector, metadata)])
+
+
 def truncate_or_pad_vector(vector, target_dimension):
     """Truncate or pad the given vector to the target dimension."""
     if len(vector) > target_dimension:
@@ -76,6 +99,16 @@ def truncate_or_pad_vector(vector, target_dimension):
         return vector + padding
     else:
         return vector
+
+# def truncate_or_pad_vector(vector, target_dimension):
+#     """Truncate or pad the given vector to the target dimension."""
+#     if len(vector) > target_dimension:
+#         return vector[:target_dimension]
+#     elif len(vector) < target_dimension:
+#         padding = [0] * (target_dimension - len(vector))
+#         return vector + padding
+#     else:
+#         return vector
 
 
 def query_pinecone(vector):
