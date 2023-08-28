@@ -38,15 +38,23 @@ def query_elasticsearch(query_str):
     except NotFoundError:
         return []
     
+
+def convert_to_list(obj):
+    if isinstance(obj, np.ndarray):
+        return obj.tolist()
+    if isinstance(obj, list):
+        return [convert_to_list(item) for item in obj]
+    return obj
+    
     
 def add_to_pinecone(doc_id, vector, metadata={}):
     # Ensure vector is in the correct format. If it's a string, convert it back to a list.
-    def convert_to_list(obj):
-        if isinstance(obj, np.ndarray):
-            return obj.tolist()
-        if isinstance(obj, list):
-            return [convert_to_list(item) for item in obj]
-        return obj
+    # def convert_to_list(obj):
+    #     if isinstance(obj, np.ndarray):
+    #         return obj.tolist()
+    #     if isinstance(obj, list):
+    #         return [convert_to_list(item) for item in obj]
+    #     return obj
     
     # Convert ndarray vectors to lists
     vector = convert_to_list(vector)
@@ -112,6 +120,9 @@ def truncate_or_pad_vector(vector, target_dimension):
 
 
 def query_pinecone(vector):
+    # Convert ndarray to list for serialization
+    vector_list = convert_to_list(vector)
+    
     # Ensure the query vector matches the expected dimension
-    vector = truncate_or_pad_vector(vector, EXPECTED_DIMENSION)
-    return index.query(queries=[vector], top_k=5)
+    vector_list = truncate_or_pad_vector(vector_list, EXPECTED_DIMENSION)
+    return index.query(queries=[vector_list], top_k=5)
