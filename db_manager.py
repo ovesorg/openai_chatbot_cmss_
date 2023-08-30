@@ -1,12 +1,10 @@
 from elasticsearch import Elasticsearch, NotFoundError
+from config import ELASTIC_SEARCH_USERNAME, ELASTIC_SEARCH_PASSWORD, ELASTIC_SEARCH_URL
 import numpy as np
 import pinecone
 
 # Define Elasticsearch credentials
-ELASTIC_SEARCH_URL = 'https://elastic-prod.omnivoltaic.com/'
-ELASTIC_SEARCH_USERNAME = 'elastic'
-ELASTIC_SEARCH_PASSWORD = '2BY2fzVYEgChBQp5'
-EXPECTED_DIMENSION = 768
+EXPECTED_DIMENSION = 1536
 
 # Initialize Elasticsearch client with the provided credentials
 es = Elasticsearch(
@@ -18,7 +16,7 @@ es = Elasticsearch(
 pinecone.init(api_key="b52d829d-5b87-4b29-aa8d-02dbf49ce32c", environment="gcp-starter")
 index_name = "omnivoltaic-company-data"
 if index_name not in pinecone.list_indexes():
-    pinecone.create_index(name=index_name, dimension=768, metric="cosine", shards=1)
+    pinecone.create_index(name=index_name, dimension=1536, metric="cosine", shards=1)
 
 index = pinecone.Index(index_name=index_name)
 
@@ -48,13 +46,6 @@ def convert_to_list(obj):
     
     
 def add_to_pinecone(doc_id, vector, metadata={}):
-    # Ensure vector is in the correct format. If it's a string, convert it back to a list.
-    # def convert_to_list(obj):
-    #     if isinstance(obj, np.ndarray):
-    #         return obj.tolist()
-    #     if isinstance(obj, list):
-    #         return [convert_to_list(item) for item in obj]
-    #     return obj
     
     # Convert ndarray vectors to lists
     vector = convert_to_list(vector)
@@ -68,6 +59,29 @@ def add_to_pinecone(doc_id, vector, metadata={}):
 
     # Now upsert the vector into Pinecone
     index.upsert(vectors=[(doc_id, vector, metadata)])
+    
+def truncate_or_pad_vector(vector, target_dimension):
+    """Truncate or pad the given vector to the target dimension."""
+    if len(vector) > target_dimension:
+        return vector[:target_dimension]
+    elif len(vector) < target_dimension:
+        padding = [0] * (target_dimension - len(vector))
+        return vector + padding
+    else:
+        return vector
+
+
+def query_pinecone(vector):
+    # Convert ndarray to list for serialization
+    print(f"vector query_pinecone: {vector}")
+    vector_list = convert_to_list(vector)
+    print(f"vector list query_pinecone: {vector_list}")
+    
+    
+    # Ensure the query vector matches the expected dimension
+    vector_list = truncate_or_pad_vector(vector_list, EXPECTED_DIMENSION)
+    print(f"vector list truncate: {vector_list}")
+    return index.query(vector=[vector_list], top_k=5)
 
 
 # def add_to_pinecone(doc_id, vector, metadata={}):
@@ -97,32 +111,3 @@ def add_to_pinecone(doc_id, vector, metadata={}):
 #     # Now upsert the vector into Pinecone
 #     index.upsert(vectors=[(doc_id, vector, metadata)])
 
-
-def truncate_or_pad_vector(vector, target_dimension):
-    """Truncate or pad the given vector to the target dimension."""
-    if len(vector) > target_dimension:
-        return vector[:target_dimension]
-    elif len(vector) < target_dimension:
-        padding = [0] * (target_dimension - len(vector))
-        return vector + padding
-    else:
-        return vector
-
-# def truncate_or_pad_vector(vector, target_dimension):
-#     """Truncate or pad the given vector to the target dimension."""
-#     if len(vector) > target_dimension:
-#         return vector[:target_dimension]
-#     elif len(vector) < target_dimension:
-#         padding = [0] * (target_dimension - len(vector))
-#         return vector + padding
-#     else:
-#         return vector
-
-
-def query_pinecone(vector):
-    # Convert ndarray to list for serialization
-    vector_list = convert_to_list(vector)
-    
-    # Ensure the query vector matches the expected dimension
-    vector_list = truncate_or_pad_vector(vector_list, EXPECTED_DIMENSION)
-    return index.query(queries=[vector_list], top_k=5)

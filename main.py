@@ -1,27 +1,33 @@
-from fastapi import FastAPI, WebSocket, HTTPException
+from fastapi import FastAPI, WebSocket
+from langchain.vectorstores import ElasticsearchStore
+from elasticsearch import Elasticsearch
+from langchain.embeddings.openai import OpenAIEmbeddings
 from models import generate_embedding
 from db_manager import add_to_elasticsearch, query_elasticsearch, add_to_pinecone, query_pinecone
-from config import OPENAI_API_KEY
+from config import OPENAI_API_KEY, ELASTIC_SEARCH_USERNAME, ELASTIC_SEARCH_PASSWORD, ELASTIC_SEARCH_URL
+from langchain.retrievers import EnsembleRetriever
 from utils import load_and_process_notion_data
 from langchain import OpenAI
-from langchain.text_splitter import RecursiveCharacterTextSplitter,CharacterTextSplitter
-from langchain.chains import ConversationalRetrievalChain
 from langchain.chains import RetrievalQA
-from langchain.vectorstores import Chroma
-from langchain.document_loaders import TextLoader
-from langchain.document_loaders import NotionDBLoader
-from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.vectorstores import Pinecone
 from langchain.memory import ConversationBufferMemory
 from langchain import PromptTemplate
-from langchain.chains import ConversationChain
-from langchain.retrievers import TFIDFRetriever
-from docx import Document
-
-import os
 
 app = FastAPI()
 
 global_context = ""  # This is where we'll store the globally accessible context
+
+embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
+elastic_vector_search = ElasticsearchStore(
+    index_name="omnivoltaic-company-data",
+    embedding=embeddings,
+    es_connection=Elasticsearch(
+        hosts=[ELASTIC_SEARCH_URL],
+        http_auth=(ELASTIC_SEARCH_USERNAME, ELASTIC_SEARCH_PASSWORD)
+    ),
+    strategy=ElasticsearchStore.SparseVectorRetrievalStrategy()
+)
+
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
@@ -31,35 +37,42 @@ async def websocket_endpoint(websocket: WebSocket):
         response = process_query(data)
         await websocket.send_text(response)
 
+
 def combine_data():
     # Load data from Pinecone and Elasticsearch
-    pinecone_results = query_pinecone(generate_embedding(""))  # We need some query to get results. Decide what's appropriate.
+    pinecone_results = query_pinecone(generate_embedding(""))
     es_results = query_elasticsearch("")
     # Combine results
-    combined_data = pinecone_results + [res["_source"]["content"] for res in es_results]
-    return combined_data
+    if len(es_results) > 0:
+        combined_data = pinecone_results + \
+            [res["_source"]["content"] for res in es_results]
+        return combined_data
+    else:
+        combined_data = pinecone_results
+        return combined_data
+
 
 def process_query(user_query: str):
-    # Use the function to get combined_data
-    combined_data = combine_data()
-    
     # Generate a response using LangChain and ChatGPT/OpenAI
-    response = qa.run({"context": global_context, "history": "", "question": user_query})
+    response = qa.run({"context": global_context, "history": "", "question": user_query, "query": user_query})
+
     return response['response']
+
 
 @app.on_event("startup")
 async def startup_event():
     load_and_process_notion_data()
-    combined_data = combine_data()
 
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=2000, chunk_overlap=400)
-    global global_context
-    global_context = " ".join(text_splitter.split_documents(combined_data))
+    pinecone_retriever = Pinecone.from_existing_index(
+        "omnivoltaic-company-data", embeddings)
+    elasticsearch_retriever = elastic_vector_search.as_retriever()
 
-    embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
-    db = Chroma.from_documents([global_context], embeddings)
+    # Create a weighted average retriever that combines the results from both retrievers.
+    retriever = EnsembleRetriever(retrievers=
+        [pinecone_retriever.as_retriever(), elasticsearch_retriever], weights=[0.5, 0.5])
+    # db = Chroma.from_documents([global_context], embeddings)
     llm = OpenAI(temperature=0.8, openai_api_key=OPENAI_API_KEY)
-    retriever = db.as_retriever()   
+    # retriever = pinecone_retriever.as_retriever()
     template = """
     Use the following context (delimited by <ctx></ctx>) and the chat history (delimited by <hs></hs>) to answer the question and answer starting with Ovsmart then full colon and the response: 
     incase of maximum token limit tell the user to be specific and dont through in an error message.
@@ -77,7 +90,9 @@ async def startup_event():
     Answer:
     """
 
-    global prompt, qa  # Make these variables global so they can be accessed by the endpoint function
+    print('Herbalist')
+    # Make these variables global so they can be accessed by the endpoint function
+    global prompt, qa
 
     prompt = PromptTemplate(
         input_variables=["history", "context", "question"],
@@ -97,6 +112,7 @@ async def startup_event():
         }
     )
 
+
 @app.post("/query/")
 async def get_response(query: str):
     if not query:
@@ -105,10 +121,12 @@ async def get_response(query: str):
     response = qa.run({"query": query})
     return {"response": response}
 
+
 @app.post("/update_data/")
 async def update_data_endpoint(content: str):
     vector = generate_embedding(content)
-    doc_id = str(hash(content))  # Create a unique id for the document. Modify as needed.
+    # Create a unique id for the document. Modify as needed.
+    doc_id = str(hash(content))
     add_to_elasticsearch(doc_id, {"content": content})
     add_to_pinecone(doc_id, vector)
     return {"status": "success", "message": "Data updated successfully."}

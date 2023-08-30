@@ -50,4 +50,6 @@ jobs:
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
 
+          mv .env.sample .env
+
           docker buildx build . --file Dockerfile --tag $IMAGE_ID:dev --platform linux/arm64/v8 --build-arg OPENAI_API_KEY=${{ secrets.OPENAI_ACCESS_KEY }} --push

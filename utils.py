@@ -14,8 +14,10 @@ def load_and_process_notion_data():
                 sources.append(l)
 
     for source in sources:
+    # for i in range(1):
         if isinstance(source, str): 
 
+            print(source)
             vector = generate_embedding(source)
             doc_id = str(hash(source))  # Create a unique id for the document.
             
