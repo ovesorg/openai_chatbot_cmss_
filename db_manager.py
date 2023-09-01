@@ -84,30 +84,3 @@ def query_pinecone(vector):
     return index.query(vector=[vector_list], top_k=5)
 
 
-# def add_to_pinecone(doc_id, vector, metadata={}):
-#     # Ensure vector is in the correct format. If it's a string, convert it back to a list.
-#     if isinstance(vector, str):
-#         try:
-#             import json
-#             vector = json.loads(vector)
-#         except:
-#             raise ValueError("Unable to parse the vector string back to a list.")
-
-#     # If the vector is a numpy array, convert it to a list.
-#     if isinstance(vector, np.ndarray):
-#         vector = vector.tolist()
-
-#     # Ensure the vector is actually a list (or similar iterable).
-#     if not isinstance(vector, (list, tuple)):
-#         raise ValueError(f"Vector is not a list or tuple but is: {type(vector)}")
-
-#     print(f"Original vector dimension: {len(vector)}")  # Log the original vector's length
-
-#     # Ensure the vector matches the expected dimension
-#     vector = truncate_or_pad_vector(vector, EXPECTED_DIMENSION)
-
-#     print(f"Modified vector dimension: {len(vector)}")  # Log the modified vector's length
-
-#     # Now upsert the vector into Pinecone
-#     index.upsert(vectors=[(doc_id, vector, metadata)])
-
