@@ -43,3 +43,13 @@ You can change the content by copying any text of less than one page and insert 
 
   python chatbot.py
 ```
+
+Wait the program to end, it will give the below statement when done.
+- [32mINFO[0m:     Uvicorn running on [1mhttp://0.0.0.0:8000[0m (Press CTRL+C to quit)
+- Open the browser on your local machine and paste the below link which is the chatbot endpoint
+
+  ```
+
+  http://127.0.0.1:8000/oves
+  
+  ````
