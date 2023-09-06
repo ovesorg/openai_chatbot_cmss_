@@ -23,7 +23,7 @@ For this project, we will not dive much into vectordatabase, since we will only 
 clone the repo
 
 ```
-  git clone https://github.com/ovesorg/openai_chatbot_cmss_.git
+  git clone https://github.com/ovesorgopenai_chatbot_cmss_/oveschatbot.git
 ```
  install the requirements for the project by running the following on git terminal
 
