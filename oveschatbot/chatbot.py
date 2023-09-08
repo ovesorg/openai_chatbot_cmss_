@@ -32,7 +32,7 @@ Be creative enough and keep conversational history to have humanly conversation.
 {question}
 Answer:
 """
-embeddings = OpenAIEmbeddings(openai_api_key="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")
+embeddings = OpenAIEmbeddings(openai_api_key=input("Enter openai api key:"))
 pinecone.init(
     api_key=input("enter pinecone api key:"), 
     environment=input("Enter pinecone env:"), 
