@@ -13,10 +13,6 @@ import uvicorn
 from langchain.vectorstores import Pinecone
 import getpass
 import pinecone
-
-os.environ["PINECONE_API_KEY"] = getpass.getpass("Pinecone API Key:")
-os.environ["PINECONE_ENV"] = getpass.getpass("Pinecone Environment:")
-os.environ["OPENAI_API_KEY"] = getpass.getpass("OpenAI API Key:")
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -36,15 +32,15 @@ Be creative enough and keep conversational history to have humanly conversation.
 {question}
 Answer:
 """
-embeddings = OpenAIEmbeddings()
+embeddings = OpenAIEmbeddings(openai_api_key="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")
 pinecone.init(
-    api_key=os.getenv("PINECONE_API_KEY"), 
-    environment=os.getenv("PINECONE_ENV"), 
+    api_key=input("enter pinecone api key:"), 
+    environment=input("Enter pinecone env:"), 
 )
 
 index_name = "omnivoltaic-company-data"
 docsearch = Pinecone.from_existing_index(index_name, embeddings)
-llm = OpenAI(temperature=0.8, openai_api_key=getpass.getpass("OpenAI API Key:"))
+llm = OpenAI(temperature=0.8, openai_api_key=input("Enter openai api key:"))
 retriever = docsearch.as_retriever()
 prompt = PromptTemplate(
     input_variables=["history", "context", "question"],
