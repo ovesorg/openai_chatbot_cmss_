@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+#messages {
+  background-color: lightblue;
+  color: black;
+  padding: 40px;
+  text-align: center;
+} 
+</style>
+</head>
+      <title>Chat</title>
+      <script src="{{ url_for('static', path='ws.js') }}"></script>
+   </head>
+   <body>
+      <h1>ovsmart Chat</h1>
+      <form action="" onsubmit="sendMessage(event)">
+      <input type="text" id="messageText" autocomplete="off"/>
+      <button>Send</button>
+      </form>
+      <p id='messages'>
+      </p>
+   </body>
+</html>
