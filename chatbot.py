@@ -1,105 +1,145 @@
 from langchain import OpenAI
-from langchain.text_splitter import RecursiveCharacterTextSplitter,CharacterTextSplitter
-from langchain.chains import ConversationalRetrievalChain
+import sqlite3  
 from langchain.chains import RetrievalQA
-from langchain.vectorstores import Chroma
-from langchain.document_loaders import DirectoryLoader
-from langchain.document_loaders import TextLoader
-from langchain.document_loaders import UnstructuredFileLoader
+from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.memory import ConversationBufferMemory
 from langchain import PromptTemplate
 from langchain.chains import ConversationChain
-from langchain.retrievers import TFIDFRetriever
+from fastapi import FastAPI,Request, WebSocket, Form,Depends, HTTPException
+from fastapi.security import HTTPBasicCredentials
+from passlib.context import CryptContext
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+from typing import Optional
+import base64
+from pydantic import BaseModel
+from fastapi.encoders import jsonable_encoder
 import os
-import re
-import requests
-import json
-import pandas as pd
+from datetime import datetime
 import uvicorn
-from getpass import getpass
-OUTPUT_DIR= os.getcwd()
-f = open(os.path.join(OUTPUT_DIR, 'notiondata.txt'), 'w')
-f.write('This is the new file.')
-f.close()
-NOTION_TOKEN = getpass()
-DATABASE_ID = getpass()
-from langchain.document_loaders import NotionDBLoader
-loader = NotionDBLoader(NOTION_TOKEN, DATABASE_ID,request_timeout_sec=50)
-docs = loader.load()
-sources = []
-for f in docs:
-    for u in f:        
-        for l in u:
-            sources.append(l)
-o = str(sources)
-r = o.translate(str.maketrans('', '','{}'))
-mod_string = r.replace('\t', '').replace('\n', '')
-list_of_char = ['“', '”','’']
-pattern = '[' + ''.join(list_of_char) + ']'
-v= re.sub(pattern, '', mod_string)
-file1 = open('notiondata.txt', 'w')
-file1.write(v)
-file1.close()
+from langchain.vectorstores import Pinecone
+import pinecone
+import secrets
+import json
+app = FastAPI()
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+templates = Jinja2Templates(directory="templates")
+# SQLite3 database setup
+conn = sqlite3.connect("your_database.db")
+cursor = conn.cursor()
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS my_tables (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL,
+        password TEXT NOT NULL,
+        Telephone TEXT NOT NULL,
+        email TEXT NOT NULL,
+        country_of_origin TEXT NOT NULL
+    );
+''')
 
-url = "https://oves-2022.myshopify.com/api/2023-04/graphql.json"
-page =1
-def get_json(url, page):
-    try:
-        url = "https://oves-2022.myshopify.com/api/2023-04/graphql.json"
+conn.commit()
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS userss_conversations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL,
+        user_question TEXT NOT NULL,
+        bot_response TEXT NOT NULL,
+        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+''')
+conn.commit()
+# Function to hash a password
+def get_password_hash(password: str):
+    return pwd_context.hash(password)
 
-        payloads = "{\"query\":\"query MyQuery {\\r\\n  articles(first: 100) {\\r\\n    nodes {\\r\\n      content\\r\\n    }\\r\\n  }\\r\\n}\",\"variables\":{}}"
-        headers = {
-          'Content-Type': 'application/json',
-          'X-Shopify-Storefront-Access-Token': 'c7d58bb21938849add72ce28c71303f3',
-          'X-Shopify-Api-Version': '2023-04'
-        }
+# Function to verify a password
+def verify_password(plain_password: str, hashed_password: str):
+    return pwd_context.verify(plain_password, hashed_password)
 
-        responses = requests.request("POST", url, headers=headers, data=payloads)
-        products_json = responses.text[20:-2]
-        products_dicts = json.loads(products_json)
-        df = pd.DataFrame.from_dict(products_dicts['nodes'])
-        OUTPUT_DIR= os.getcwd()
-        f = open(os.path.join(OUTPUT_DIR, 'articles.txt'), 'w',encoding='utf-8')
-        df.to_csv('articles.txt', header=None, index=None, sep=' ', mode='a')
+# Function to create a new user
+def create_user(username: str, password: str):
+    hashed_password = get_password_hash(password)
+    cursor.execute('INSERT INTO my_tables (username, password) VALUES (?, ?)', (username, hashed_password))
+    conn.commit()
 
-        payload = json.dumps({
-          "query": "query Product($first: Int) {\n  products(first: $first) {\n    nodes {\n      id\n      title\n      handle\n      descriptionHtml\n      publishedAt\n      createdAt\n      updatedAt\n      vendor\n      tags\n      createdAt\n      \n    }\n  }\n}",
-          "variables": {
-            "first": 100
-          }
-        })
-        headers = {
-          'Content-Type': 'application/json',
-          'X-Shopify-Storefront-Access-Token': 'shopify access token',
-          'X-Shopify-Api-Version': 'api-version'
-        }
-        response = requests.request("POST", url, headers=headers, data=payload)
-        products_json = response.text[20:-2]
-        products_dict = json.loads(products_json)
-        df = pd.DataFrame.from_dict(products_dict['nodes'])
-        OUTPUT_DIR= os.getcwd()
-        f = open(os.path.join(OUTPUT_DIR, 'products.txt'), 'w',encoding='utf-8')
-        df.to_csv('products.txt', header=None, index=None, sep=' ', mode='a')
-    except requests.exceptions.HTTPError as error_http:
-        print("HTTP Error:", error_http)
+# Function to authenticate a user
+def authenticate_user(credentials: HTTPBasicCredentials):
+    cursor.execute('SELECT username, password FROM my_tables WHERE username = ?', (credentials.username,))
+    user = cursor.fetchone()
+    if user is None or not verify_password(credentials.password, user[1]):
+        return None
+    return credentials.username
 
-    except requests.exceptions.ConnectionError as error_connection:
-        print("Connection Error:", error_connection)
+html = '''<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSocket Client</title>
+</head>
+<body>
+  <div id="loginSection">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username"><br>
+    <input type="password" id="password" placeholder="Password"><br>
+    <button onclick="login()">Login</button>
+  </div>
 
-    except requests.exceptions.Timeout as error_timeout:
-        print("Timeout Error:", error_timeout)
+  <div id="chatSection" style="display: none;">
+    <h2>Chat</h2>
+    <textarea id="messages" rows="10" cols="100" disabled></textarea><br>
+    <input type="text" id="messageInput" placeholder="Type a message">
+    <button onclick="sendMessage()">Send</button>
+  </div>
 
-    except requests.exceptions.RequestException as error:
-        print("Error: ", error)
+  <script>
+    let ws;
+    let isLoggedIn = false;
 
-get_json(url, page)
+    function login() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const credentials = btoa(`${username}:${password}`);
+
+      ws = new WebSocket(`ws://127.0.0.1:8000/ws?credentials=${credentials}`);
+
+      ws.onopen = (event) => {
+        console.log('WebSocket connection opened:', event);
+        document.getElementById('loginSection').style.display = 'none';
+        document.getElementById('chatSection').style.display = 'block';
+        isLoggedIn = true;
+      };
+
+      ws.onmessage = (event) => {
+        const messagesTextarea = document.getElementById('messages');
+        messagesTextarea.value += `Received: ${event.data}\n`;
+      };
+    }
+
+    function sendMessage() {
+      if (!isLoggedIn) {
+        alert('Please log in first.');
+        return;
+      }
+
+      const messageInput = document.getElementById('messageInput');
+      const message = messageInput.value;
+      ws.send(message);
+      messageInput.value = '';
+    }
+  </script>
+</body>
+</html>
+
+'''
+
 template = """
-Use the following context (delimited by <ctx></ctx>) and the chat history (delimited by <hs></hs>) to answer the question. 
+Use the following context (delimited by <ctx></ctx>) and the chat history from userss_conversations table   (delimited by <hs></hs>) to answer the question. 
 incase of maximum token limit tell the user to be specific and dont through in an error message.
-Be creative enough and keep conversational history to have humanly conversation.  Give short and correct answers based on the the content given.
-------
-<ctx>
+Be factual and only answer based on context provided by knowledgebase  from pinecone and history from userss_conversations table. give straight forward answers and maintain the memory of each user, based on his or her conversation that is stored in the userss_conversations tables againts his username
 {context}
 </ctx>
 ------
@@ -110,21 +150,19 @@ Be creative enough and keep conversational history to have humanly conversation.
 {question}
 Answer:
 """
-k= os.getcwd()
-ke = (f"{k}\\")
-loader = DirectoryLoader(ke, glob="**/*.txt")
-doc = loader.load()
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=20)
-docs = text_splitter.split_documents(doc)
-embeddings = OpenAIEmbeddings(openai_api_key="enter_open_ai_key")
-db = Chroma.from_documents(docs, embeddings)
-llm = OpenAI(temperature=0.8, openai_api_key="enter_open_ai_key")
-retriever = db.as_retriever()
+embeddings = OpenAIEmbeddings(model_name="gpt-4.0-turbo", openai_api_key=input("Enter your GPT-4 API key:"))
+pinecone.init(
+    api_key=input("Enter your Pinecone API key:"),
+    environment=input("Enter your Pinecone environment:"),
+)
+index_name = "omnivoltaic-company-data"
+docsearch = Pinecone.from_existing_index(index_name, embeddings)
+llm = OpenAI(temperature=0.8, openai_api_key=input("Enter your GPT-4 API key:"))
+retriever = docsearch.as_retriever()
 prompt = PromptTemplate(
     input_variables=["history", "context", "question"],
     template=template,
 )
-# Setup RetrievalQA chain
 qa = RetrievalQA.from_chain_type(
     llm=llm,
     chain_type='stuff',
@@ -138,6 +176,86 @@ qa = RetrievalQA.from_chain_type(
             input_key="question"),
     }
 )
-    
-while True:
-    print(qa.run({"query": input('\n'"customer:")}))
+
+@app.get("/")
+async def get():
+    return HTMLResponse(html)
+
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket, credentials: str):
+    try:
+        # Decode base64-encoded credentials
+        decoded_credentials = base64.b64decode(credentials).decode("utf-8")
+        # Split credentials into username and password
+        username, password = decoded_credentials.split(":")
+
+        # Check the credentials against the SQLite database
+        cursor.execute('SELECT username, password FROM my_tables WHERE username = ? AND password = ?', (username, password))
+        user = cursor.fetchone()
+        print(user)
+
+        if user:
+            await websocket.accept()
+
+            while True:
+                data = await websocket.receive_text()
+
+                # Generate a unique conversation ID using the current timestamp
+                timestamp = datetime.now()  # Get the current timestamp
+                # Concatenate the user's chat history for context
+                chat_history = cursor.execute(
+                    "SELECT username, user_question, bot_response ,timestamp FROM userss_conversations WHERE username = ? ",
+                    (username,)
+                ).fetchall()
+
+                print(chat_history)
+
+                chat_history = "\n".join([msg[0] for msg in chat_history])
+
+                # Prepare the query with context for embeddings
+                query_with_context = {
+                    "context": chat_history,
+                    "question": data,
+                }
+
+                # Convert the query to a string
+                query_string = json.dumps(query_with_context)
+
+                # Get the response from embeddings using the query with context
+                response = qa.run(query_string)
+
+                # Insert the user's question and bot's response into the database
+                cursor.execute(
+                    "INSERT INTO userss_conversations (username, user_question, bot_response, timestamp) VALUES (?, ?, ?, ?)",
+                    (username, data, response, timestamp)
+                )
+                conn.commit()
+
+                # Send the chatbot's response back to the user
+                await websocket.send_text(response)
+        else:
+            raise HTTPException(status_code=403, detail="Invalid credentials")
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid credentials format")
+
+
+class User(BaseModel):
+    username: str
+    password: str
+    Telephone: int
+    email: str
+    country_of_origin: str
+@app.post("/insert/")
+async def insert_data(user: User):
+    try:
+        # Insert data into the database
+        cursor.execute("INSERT INTO my_tables (username, password,Telephone,email,country_of_origin) VALUES (?, ?,?,?,?)", (user.username, user.password,user.Telephone,user.email,user.country_of_origin))
+        conn.commit()
+        return {"message": "Data inserted successfully"}
+    except Exception as e:
+        return {"error": f"Failed to insert data: {str(e)}"}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=8000)
