@@ -167,11 +167,12 @@ class Pinecone(VectorStore):
             filter=filter,
         )
         for res in results["matches"]:
-            metadata = res["metadata"]
-            if self._text_key in metadata:
-                text = metadata.pop(self._text_key)
+            # metadata = res["metadata"]
+            #  if self._text_key in metadata:
+            if self._text_key in res:
+                text = res.pop(self._text_key)
                 score = res["score"]
-                docs.append((Document(page_content=text, metadata=metadata), score))
+                docs.append((Document(page_content=text, metadata=res), score))
             else:
                 logger.warning(
                     f"Found document with no `{self._text_key}` key. Skipping."
