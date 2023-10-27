@@ -64,7 +64,7 @@ def process_query(user_query: str):
 
 @app.on_event("startup")
 async def startup_event():
-    load_and_process_notion_data()
+    # load_and_process_notion_data()
 
     # Make these variables global so they can be accessed by the endpoint function
     global prompt, qa, user_query
