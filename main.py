@@ -12,6 +12,8 @@ from langchain.vectorstores import Pinecone
 from langchain.memory import ConversationBufferMemory
 from langchain import PromptTemplate
 
+from utils import load_and_process_notion_data
+
 app = FastAPI()
 
 global_context = ""  # This is where we'll store the globally accessible context
@@ -62,7 +64,7 @@ def process_query(user_query: str):
 
 @app.on_event("startup")
 async def startup_event():
-    # load_and_process_notion_data()
+    load_and_process_notion_data()
 
     # Make these variables global so they can be accessed by the endpoint function
     global prompt, qa, user_query
