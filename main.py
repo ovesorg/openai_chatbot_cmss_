@@ -5,7 +5,8 @@ from models import generate_embedding
 from db_manager import add_to_elasticsearch, query_elasticsearch, add_to_pinecone, query_pinecone
 from config import OPENAI_API_KEY, ELASTIC_SEARCH_USERNAME, ELASTIC_SEARCH_PASSWORD, ELASTIC_SEARCH_URL
 from langchain.retrievers import EnsembleRetriever
-from langchain import OpenAI
+# from langchain import OpenAI
+from langchain.chat_models import ChatOpenAI
 from langchain.chains import RetrievalQA
 from langchain.vectorstores import Pinecone
 from langchain.memory import ConversationBufferMemory
@@ -74,7 +75,8 @@ async def startup_event():
     # retriever = EnsembleRetriever(retrievers=[elasticsearch_retriever, pinecone_retriever.as_retriever(
     # )], weights=[1, 0])
     # db = Chroma.from_documents([global_context], embeddings)
-    llm = OpenAI(temperature=0.8, openai_api_key=OPENAI_API_KEY)
+    # llm = OpenAI(temperature=0.8, openai_api_key=OPENAI_API_KEY)
+    llm = ChatOpenAI(temperature=0.8, openai_api_key=OPENAI_API_KEY, model='gpt-4')
     retriever = pinecone_retriever.as_retriever()
     template = """
     Use the following context (delimited by <ctx></ctx>) and the chat history (delimited by <hs></hs>) to answer the question and answer starting with Ovsmart then full colon and the response: 
