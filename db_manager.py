@@ -13,7 +13,7 @@ es = Elasticsearch(
 )
 
 # Initialize Pinecone
-pinecone.init(api_key="b52d829d-5b87-4b29-aa8d-02dbf49ce32c", environment="gcp-starter")
+pinecone.init(api_key="199b3561-863a-41a7-adfb-db5f55e505ac", environment="eu-west4-gcp")
 index_name = "omnivoltaic-company-data"
 if index_name not in pinecone.list_indexes():
     pinecone.create_index(name=index_name, dimension=1536, metric="cosine", shards=1)
