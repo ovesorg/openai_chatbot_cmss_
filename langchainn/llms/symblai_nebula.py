@@ -66,7 +66,7 @@ class Nebula(LLM):
 
         extra = Extra.forbid
 
-    @root_validator()
+    @root_validator(pre=False, skip_on_failure=True)
     def validate_environment(cls, values: Dict) -> Dict:
         """Validate that api key and python package exists in environment."""
         nebula_service_url = get_from_dict_or_env(
