@@ -69,7 +69,7 @@ async def startup_event():
     # )], weights=[1, 0])
     # db = Chroma.from_documents([global_context], embeddings)
     # llm = OpenAI(temperature=0.8, openai_api_key=OPENAI_API_KEY)
-    llm = ChatOpenAI(temperature=0.8, openai_api_key=OPENAI_API_KEY, model='gpt-4')
+    llm = OpenAI(temperature=0.8, openai_api_key=OPENAI_API_KEY, model='gpt-4')
     retriever = pinecone_retriever.as_retriever()
 template = """
 You are here to assist clients who want information about our products. Combine chat history for the user together with his question and give a response that is considerate of his previous conversation and present question.
