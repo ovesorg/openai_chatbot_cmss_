@@ -56,7 +56,6 @@ jobs:
           mv .env.sample .env
 
           docker buildx build . --file Dockerfile --tag $IMAGE_ID:dev --platform linux/arm64/v8 --build-arg OPENAI_API_KEY=${{ secrets.OPENAI_ACCESS_KEY }} --push
-          npm i --f
           zip -r build.zip appspec.yml scripts docker-compose.yml 
 
       - name: Upload
