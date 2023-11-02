@@ -55,7 +55,7 @@ async def startup_event():
     retriever = pinecone_retriever.as_retriever()
 template = """
 You are here to assist clients who want information about our products. Combine chat history for the user together with his question and give a response that is considerate of his previous conversation and present question.
-Address each client based on their username when responding and dont be monotonous.
+Address each client with respect and good business tone, remember include our product certification as contained in the context.
 Use the following context (delimited by <ctx></ctx>) and the chat history    (delimited by <hs></hs>) to answer the question. 
 
 
