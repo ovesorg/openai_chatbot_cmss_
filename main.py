@@ -35,14 +35,6 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 PINECONE_API_KEY = "199b3561-863a-41a7-adfb-db5f55e505ac"
 PINECONE_ENVIRONMENT = "eu-west4-gcp"
 
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
-    await websocket.accept()
-    while True:
-        data = await websocket.receive_text()
-        response = process_query(data)
-        await websocket.send_text(response)
-
 @app.on_event("startup")
 async def startup_event():
     # load_and_process_notion_data()
@@ -107,7 +99,13 @@ qa = RetrievalQA.from_chain_type(
             input_key="question"),
     }
 )
-
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        data = await websocket.receive_text()
+        response = qa.run(data)
+        await websocket.send_text(response)
 
 @app.post("/query/")
 async def get_response(query: str):
