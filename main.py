@@ -43,16 +43,6 @@ async def websocket_endpoint(websocket: WebSocket):
         response = process_query(data)
         await websocket.send_text(response)
 
-
-def process_query(user_query: str):
-    # Generate a response using LangChain and ChatGPT/OpenAI
-    user_query = user_query
-    response = qa.run({"context": global_context, "history": "",
-                      "question": user_query, "query": user_query})
-    return response
-
-
-
 @app.on_event("startup")
 async def startup_event():
     # load_and_process_notion_data()
