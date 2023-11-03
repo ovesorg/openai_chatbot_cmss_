@@ -78,7 +78,7 @@ retriever = docsearch.as_retriever()
 prompt = PromptTemplate(
     input_variables=["history", "context", "question"],
     template=template,
-    max_tokens=2000
+    max_tokens=1000
 )
 qa = RetrievalQA.from_chain_type(
     llm=llm,
