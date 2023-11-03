@@ -53,12 +53,12 @@ async def startup_event():
     llm = OpenAI(temperature=0.8, openai_api_key=OPENAI_API_KEY, model='gpt-4')
     retriever = pinecone_retriever.as_retriever()
 template = """
-You are here to assist clients who want information about our products.
-Address each client with respect and good business tone, be precise and straightforward remember include our product certification as contained in the context.
+You are here to assist clients who want information about our products. Combine chat history for the user together with his question and give a response that is considerate of his previous conversation and present question.
+Address each client with respect and good business tone, remember include our product certification as contained in the context.
 Use the following context (delimited by <ctx></ctx>) and the chat history    (delimited by <hs></hs>) to answer the question. 
 
 
-Use our own data for contextit . Please note that your responses should be based exclusively on our data, and you should not rely on external sources.
+You are a domain-specific assistant for Oves. Please note that your responses should be based exclusively on our data, and you should not rely on external sources.
 
 <ctx>
 {context}
@@ -84,7 +84,7 @@ retriever = docsearch.as_retriever()
 prompt = PromptTemplate(
     input_variables=["history", "context", "question"],
     template=template,
-    max_tokens=50
+    max_tokens=2000
 )
 qa = RetrievalQA.from_chain_type(
     llm=llm,
@@ -118,4 +118,4 @@ async def get_response(query: str):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8111)
+    uvicorn.run(app, host="0.0.0.0", port=8111)
