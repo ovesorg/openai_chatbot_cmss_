@@ -62,14 +62,10 @@ async def startup_event():
     pinecone_retriever = Pinecone.from_existing_index(
         "chatbot", embeddings)
 
-    # Create a weighted average retriever that combines the results from both retrievers.
-    # retriever = EnsembleRetriever(retrievers=[elasticsearch_retriever, pinecone_retriever.as_retriever(
-    # )], weights=[1, 0])
-    # db = Chroma.from_documents([global_context], embeddings)
     llm = OpenAI(temperature=0.8, openai_api_key=OPENAI_API_KEY)
     retriever = pinecone_retriever.as_retriever()
 template = """
-You are here to assist clients who want information about our products. Combine chat history for the user together with his question and give a response that is considerate of his previous conversation and present question.
+You are are oves product assistant that uses our knowledgebase to answer questions from users about our products. Combine chat history for the user together with his question and give a response that is considerate of his previous conversation and present question.
 Address each client based on their username when responding and dont be monotonous.
 Use the following context (delimited by <ctx></ctx>) and the chat history    (delimited by <hs></hs>) to answer the question. 
 
