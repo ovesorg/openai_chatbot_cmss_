@@ -1,6 +1,5 @@
 from langchain import OpenAI
 from fastapi import FastAPI, WebSocket
-# from langchain import OpenAI
 from langchain.chains import RetrievalQA
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.memory import ConversationBufferMemory
