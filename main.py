@@ -32,26 +32,8 @@ load_dotenv()
 
 # Access the variables
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-PINECONE_API_KEY = os.getenv('PINECONE_API_KEY')
+PINECONE_API_KEY = "199b3561-863a-41a7-adfb-db5f55e505ac"
 PINECONE_ENVIRONMENT = "eu-west4-gcp"
-
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
-    await websocket.accept()
-    while True:
-        data = await websocket.receive_text()
-        response = process_query(data)
-        await websocket.send_text(response)
-
-
-def process_query(user_query: str):
-    # Generate a response using LangChain and ChatGPT/OpenAI
-    user_query = user_query
-    response = qa.run({"context": global_context, "history": "",
-                      "question": user_query, "query": user_query})
-    return response
-
-
 
 @app.on_event("startup")
 async def startup_event():
@@ -73,7 +55,7 @@ async def startup_event():
     retriever = pinecone_retriever.as_retriever()
 template = """
 You are here to assist clients who want information about our products. Combine chat history for the user together with his question and give a response that is considerate of his previous conversation and present question.
-Address each client based on their username when responding and dont be monotonous.
+Address each client with respect and good business tone, remember include our product certification as contained in the context.
 Use the following context (delimited by <ctx></ctx>) and the chat history    (delimited by <hs></hs>) to answer the question. 
 
 
@@ -117,7 +99,13 @@ qa = RetrievalQA.from_chain_type(
             input_key="question"),
     }
 )
-
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        data = await websocket.receive_text()
+        response = qa.run(data)
+        await websocket.send_text(response)
 
 @app.post("/query/")
 async def get_response(query: str):
@@ -126,7 +114,6 @@ async def get_response(query: str):
 
     response = qa.run({"query": query})
     return {"response": response}
-
 
 
 if __name__ == "__main__":
