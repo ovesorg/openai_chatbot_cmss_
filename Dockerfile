@@ -11,12 +11,17 @@ COPY . /app
 RUN apt-get update && \
     apt-get install -y --no-install-recommends gcc g++ && \
     pip install --upgrade pip && \
-    pip install -r requirements.txt && \
+    pip install --no-cache-dir -r requirements.txt && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# Set the OpenAI API key as an environment variable
 ARG OPENAI_API_KEY
 ENV OPENAI_API_KEY=$OPENAI_API_KEY
+
+# Set the Pinecone API key as an environment variable
+ARG PINECONE_API_KEY
+ENV PINECONE_API_KEY=$PINECONE_API_KEY
 
 # Make port 80 available to the world outside this container
 EXPOSE 8111
@@ -26,4 +31,3 @@ EXPOSE 8111
 
 # Run your application when the container launches
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8111"]
-

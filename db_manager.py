@@ -16,6 +16,9 @@ es = Elasticsearch(
 pinecone.init(api_key="199b3561-863a-41a7-adfb-db5f55e505ac", environment="eu-west4-gcp")
 index_name = "chatbot"
 if index_name not in pinecone.list_indexes():
+<<<<<<< HEAD
+    pinecone.create_index(name=index_name, dimension=1536, metric="cosine", shards=1, pods=2)
+=======
     pinecone.create_index(
       name=index_name,
       metric='cosine',
@@ -23,6 +26,7 @@ if index_name not in pinecone.list_indexes():
        shards=1,
         pods=2
 )
+>>>>>>> main
 
 index = pinecone.Index(index_name=index_name)
 
