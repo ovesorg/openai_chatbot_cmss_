@@ -17,6 +17,7 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 from fastapi.encoders import jsonable_encoder
 import os
+import asyncio
 import uvicorn
 from langchain.vectorstores import Pinecone
 import pinecone
