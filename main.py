@@ -100,12 +100,8 @@ async def websocket_endpoint(websocket: WebSocket):
             print(f"Error: {str(e}")
             # Reconnect WebSocket
             await asyncio.sleep(5)  # Delay for reconnection
-            try:
-                websocket = await websocket.close()
-            except:
-                pass
-            new_websocket = WebSocket.accept()
-            websocket = new_websocket
+            continue
+
 
 @app.post("/query/")
 async def get_response(query: str):
