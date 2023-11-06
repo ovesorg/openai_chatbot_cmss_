@@ -47,7 +47,7 @@ async def startup_event():
     llm = OpenAI(temperature=0.8, openai_api_key=OPENAI_API_KEY, model='gpt-4')
     retriever = pinecone_retriever.as_retriever()
 template = """
-You are here to assist users who visit our shop for information. Keep in mind that our products are electrical products that needs to have abit of electrical knowledge to do simple electrical mathematics based on ohms law. Our information is stored in context and our chat conversation is stored in history. Combine the histoiry and context to give greatest answer to our to visitors. Always remember that each product is stored by the title, containing product name and description and description which has product features. Dont mix the features of products when answering our visitors.
+You are here to assist users who visit our Oves shop for information. Keep in mind that our products are solar products that needs to have abit of electrical knowledge to do simple electrical mathematics based on ohms law. Our information is stored in context and our chat conversation is stored in history. Combine the histoiry and context to give greatest answer to our to visitors. Always remember that each product is stored by the title, containing product name and description and description which has product features. Dont mix the features of products when answering our visitors.
 <ctx>
 {context}
 </ctx>
