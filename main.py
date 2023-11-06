@@ -98,7 +98,8 @@ async def websocket_endpoint(websocket: WebSocket):
         except Exception as e:
             # Handle the exception (e.g., log it)
             print(f"Error: {str(e)}")
-            # Continue the loop to keep the connection alive
+            # Implement reconnection logic with a delay
+            await asyncio.sleep(3)  # Delay for reconnection
             continue
 
 @app.post("/query/")
