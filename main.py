@@ -93,17 +93,18 @@ qa = RetrievalQA.from_chain_type(
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     while True:
-        data = await websocket.receive_text()
         try:
+            data = await websocket.receive_text()
             response = qa.run(data)
             await websocket.send_text(response)
         except Exception as e:
-            # Handle the exception (e.g., log it)
-            print(f"Error: {str(e)}")
-            # Implement reconnection logic with a delay
-            await asyncio.sleep(5)  # Delay for reconnection
-            continue
+            # Send a response to the customer to be more specific
+            error_message = "We couldn't process your request. Please provide more specific information. If it persists refresh your page"
+            await websocket.send_text(error_message)
 
+            # Implement reconnection logic with a delay
+            await asyncio.sleep(2)  # Delay for reconnection
+            continue
 @app.post("/query/")
 async def get_response(query: str):
     if not query:
