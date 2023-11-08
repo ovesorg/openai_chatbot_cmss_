@@ -46,12 +46,10 @@ async def startup_event():
     pinecone_retriever = Pinecone.from_existing_index(
         "chatbot", embeddings)
 
-    llm = OpenAI(temperature=0.8, openai_api_key=OPENAI_API_KEY, model='gpt-4')
+    llm = OpenAI(temperature=0.5, openai_api_key=OPENAI_API_KEY, model='gpt-4')
     retriever = pinecone_retriever.as_retriever()
 template = """
-As a representative of our organization, please provide a professional and informative response based on the available information. Ensure your response is concise and reflects our commitment to quality and accuracy.
-Use top three conversations only when maintaining conservation memory
-<ctx>
+As a representative of our organization, please provide a professional and informative response based on the available information. Ensure your response is concise and reflects our commitment to quality and accuracy. When refering to chat history, consider the top three recent converstaions only to help reduce token limit problems<ctx>
 {context}
 </ctx>
 ------
@@ -63,7 +61,7 @@ Use top three conversations only when maintaining conservation memory
 
 Answer:
 """
-embeddings = OpenAIEmbeddings(model_name="gpt-4.0-turbo", openai_api_key=OPENAI_API_KEY)
+embeddings = OpenAIEmbeddings(model_name="gpt-4", openai_api_key=OPENAI_API_KEY)
 pinecone.init(
     api_key=PINECONE_API_KEY,
     environment=PINECONE_ENVIRONMENT,
@@ -75,7 +73,7 @@ retriever = docsearch.as_retriever()
 prompt = PromptTemplate(
     input_variables=["history", "context", "question"],
     template=template,
-    max_tokens=300
+    max_tokens=50
 )
 qa = RetrievalQA.from_chain_type(
     llm=llm,
@@ -94,25 +92,27 @@ qa = RetrievalQA.from_chain_type(
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     while True:
+        data = await websocket.receive_text()
         try:
-            data = await websocket.receive_text()
-            response = qa.run(data,max_tokens=1000)
+            response = qa.run(data,max_tokens=100)
             await websocket.send_text(response)
         except Exception as e:
-            # Send a response to the customer to be more specific
-            error_message = "We couldn't process your request. Please provide more specific information. If it persists refresh your page"
-            await websocket.send_text(error_message)
-
-            # Implement reconnection logic with a delay
-            await asyncio.sleep(2)  # Delay for reconnection
+            # Handle the exception (e.g., log it)
+            print(f"Error: {str(e)}")
+            # Continue the loop to keep the connection alive
             continue
 @app.post("/query/")
 async def get_response(query: str):
     if not query:
-        return {"error": "Query not provided"}
-
-    response = qa.run({"query": query})
-    return {"response": response}
+        raise HTTPException(status_code=400, detail="Query not provided")
+    try:
+        response = qa.run({"query": query})
+        return {"response": response}
+    except Exception as e:
+        # Handle the exception (e.g., log it)
+        print(f"Error: {str(e)}")
+        # Customize the response message for your specific use case
+        raise HTTPException(status_code=400, detail="Make your question more specific")
 
 
 if __name__ == "__main__":
