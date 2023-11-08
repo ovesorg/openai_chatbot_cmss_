@@ -2,6 +2,7 @@ from langchain import OpenAI
 from langchain.chat_models import ChatOpenAI
 from fastapi import FastAPI, WebSocket
 from langchain.chains import RetrievalQA
+from langchain.agents import create_pandas_dataframe_agent
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.memory import ConversationBufferMemory
 from langchain import PromptTemplate
@@ -18,7 +19,6 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 from fastapi.encoders import jsonable_encoder
 import os
-import asyncio
 import uvicorn
 from langchain.vectorstores import Pinecone
 import pinecone
@@ -113,7 +113,6 @@ async def get_response(query: str):
         print(f"Error: {str(e)}")
         # Customize the response message for your specific use case
         raise HTTPException(status_code=400, detail="Make your question more specific")
-
 
 if __name__ == "__main__":
     import uvicorn
