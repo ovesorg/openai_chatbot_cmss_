@@ -50,6 +50,7 @@ async def startup_event():
     retriever = pinecone_retriever.as_retriever()
 template = """
 As a representative of our organization, please provide a professional and informative response based on the available information. Ensure your response is concise and reflects our commitment to quality and accuracy.
+Use top three conversations only when maintaining conservation memory
 <ctx>
 {context}
 </ctx>
@@ -95,7 +96,7 @@ async def websocket_endpoint(websocket: WebSocket):
     while True:
         try:
             data = await websocket.receive_text()
-            response = qa.run(data,max_tokens=100)
+            response = qa.run(data,max_tokens=50)
             await websocket.send_text(response)
         except Exception as e:
             # Send a response to the customer to be more specific
