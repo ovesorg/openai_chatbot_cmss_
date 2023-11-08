@@ -96,7 +96,7 @@ async def websocket_endpoint(websocket: WebSocket):
     while True:
         try:
             data = await websocket.receive_text()
-            response = qa.run(data,max_tokens=50)
+            response = qa.run(data,max_tokens=1000)
             await websocket.send_text(response)
         except Exception as e:
             # Send a response to the customer to be more specific
