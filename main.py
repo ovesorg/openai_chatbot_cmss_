@@ -91,7 +91,7 @@ qa = RetrievalQA.from_chain_type(
     }
 )
 @app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
+'''async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     while True:
         data = await websocket.receive_text()
@@ -102,7 +102,16 @@ async def websocket_endpoint(websocket: WebSocket):
             # Handle the exception (e.g., log it)
             print(f"Error: {str(e)}")
             # Continue the loop to keep the connection alive
-            continue
+            continue'''
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        data = await websocket.receive_text()
+        response = qa.run(data)
+        await websocket.send_text(response)
+
 @app.post("/query/")
 async def get_response(query: str):
     if not query:
