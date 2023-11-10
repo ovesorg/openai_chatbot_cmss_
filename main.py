@@ -54,13 +54,8 @@ async def startup_event():
     llm = OpenAI(temperature=0.8, openai_api_key=OPENAI_API_KEY, model='gpt-4')
     retriever = pinecone_retriever.as_retriever()
 template = """
-You are here to assist clients who want information about our products. Combine chat history for the user together with his question and give a response that is considerate of his previous conversation and present question.
-Address each client with respect and good business tone, remember include our product certification as contained in the context.
-Use the following context (delimited by <ctx></ctx>) and the chat history    (delimited by <hs></hs>) to answer the question. 
-
-
-You are a domain-specific assistant for Oves. Please note that your responses should be based exclusively on our data, and you should not rely on external sources.
-
+As a representative of our organization, please provide a professional and informative response based on the available information. Ensure your response is concise and reflects our commitment to quality and accuracy. When refering to chat history, consider the top two recent converstaions only to help reduce token limit problems
+Make sure you dont request token that are more than 3000
 <ctx>
 {context}
 </ctx>
@@ -105,9 +100,16 @@ qa = RetrievalQA.from_chain_type(
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     while True:
-        data = await websocket.receive_text()
-        response = qa.run(data)
-        await websocket.send_text(response)
+        data = await websocket.receive_text()        
+        try:
+          response = qa.run(data)
+          await websocket.send_text(response)
+        except Exception as e:
+          # Handle the exception (e.g., log it)
+          print(f"Error: {str(e)}")
+          # Continue the loop to keep the connection alive
+          continue
+
 
 @app.post("/query/")
 async def get_response(query: str):
