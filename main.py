@@ -3,6 +3,7 @@ from fastapi import FastAPI, WebSocket
 from langchain.chains import RetrievalQA
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.memory import ConversationBufferMemory
+from langchain.memory import ConversationSummaryBufferMemory
 from langchain import PromptTemplate
 from langchain.chains import ConversationChain
 from fastapi import FastAPI,Request, WebSocket, Form,Depends, HTTPException
@@ -94,9 +95,10 @@ qa = RetrievalQA.from_chain_type(
     chain_type_kwargs={
         "verbose": False,
         "prompt": prompt,
-        "memory": ConversationBufferMemory(
+        "memory": ConversationSummaryBufferMemory(
             memory_key="history",
-            input_key="question"),
+            input_key="question",
+            llm=llm,max_token_limit=200),
     }
 )
 @app.websocket("/ws")
