@@ -7,9 +7,11 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.memory import ConversationBufferMemory
 from langchain.memory import ConversationSummaryBufferMemory
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from langchain import PromptTemplate
 from langchain.chains import ConversationChain
 from fastapi import FastAPI,Request, WebSocket, Form,Depends, HTTPException
+from fastapi.responses import JSONResponse
 from fastapi.security import HTTPBasicCredentials
 from passlib.context import CryptContext
 from fastapi.responses import HTMLResponse
@@ -29,6 +31,7 @@ import json
 
 
 app = FastAPI()
+app.add_middleware(HTTPSRedirectMiddleware)
 @app.middleware("http")
 async def add_x_content_type_options_header(request, call_next):
     response = await call_next(request)
