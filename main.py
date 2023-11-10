@@ -54,8 +54,7 @@ async def startup_event():
     llm = OpenAI(temperature=0.8, openai_api_key=OPENAI_API_KEY, model='gpt-4')
     retriever = pinecone_retriever.as_retriever()
 template = """
-As a representative of our organization, please provide a professional and informative response based on the available information. Ensure your response is concise and reflects our commitment to quality and accuracy. When refering to chat history, consider the top two recent converstaions only to help reduce token limit problems
-Make sure you dont request token that are more than 3000
+You are oves representative, named as ovsmart. You are to help clients with information about our products using the information from the context provided only. Carry yourself in good manner and give truthful information about each product as described in the context
 <ctx>
 {context}
 </ctx>
