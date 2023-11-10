@@ -1,17 +1,11 @@
 from langchain import OpenAI
-from langchain.chat_models import ChatOpenAI
 from fastapi import FastAPI, WebSocket
 from langchain.chains import RetrievalQA
-from langchain.agents import create_pandas_dataframe_agent
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.memory import ConversationBufferMemory
-from langchain.memory import ConversationSummaryBufferMemory
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from langchain import PromptTemplate
 from langchain.chains import ConversationChain
 from fastapi import FastAPI,Request, WebSocket, Form,Depends, HTTPException
-from fastapi.responses import JSONResponse
 from fastapi.security import HTTPBasicCredentials
 from passlib.context import CryptContext
 from fastapi.responses import HTMLResponse
@@ -31,12 +25,7 @@ import json
 
 
 app = FastAPI()
-app.add_middleware(HTTPSRedirectMiddleware)
-@app.middleware("http")
-async def add_x_content_type_options_header(request, call_next):
-    response = await call_next(request)
-    response.headers["X-Content-Type-Options"] = "nosniff"
-    return response
+
 # Load environment variables from .env file
 load_dotenv()
 
@@ -55,10 +44,23 @@ async def startup_event():
     pinecone_retriever = Pinecone.from_existing_index(
         "chatbot", embeddings)
 
-    llm = OpenAI(temperature=0.5, openai_api_key=OPENAI_API_KEY, model='gpt-4')
+
+    # Create a weighted average retriever that combines the results from both retrievers.
+    # retriever = EnsembleRetriever(retrievers=[elasticsearch_retriever, pinecone_retriever.as_retriever(
+    # )], weights=[1, 0])
+    # db = Chroma.from_documents([global_context], embeddings)
+    # llm = OpenAI(temperature=0.8, openai_api_key=OPENAI_API_KEY)
+    llm = OpenAI(temperature=0.8, openai_api_key=OPENAI_API_KEY, model='gpt-4')
     retriever = pinecone_retriever.as_retriever()
 template = """
-As a representative of our organization, please provide a professional and informative response based on the available information. Ensure your response is concise and reflects our commitment to quality and accuracy. When refering to chat history, consider the top three recent converstaions only to help reduce token limit problems<ctx>
+You are here to assist clients who want information about our products. Combine chat history for the user together with his question and give a response that is considerate of his previous conversation and present question.
+Address each client with respect and good business tone, remember include our product certification as contained in the context.
+Use the following context (delimited by <ctx></ctx>) and the chat history    (delimited by <hs></hs>) to answer the question. 
+
+
+You are a domain-specific assistant for Oves. Please note that your responses should be based exclusively on our data, and you should not rely on external sources.
+
+<ctx>
 {context}
 </ctx>
 ------
@@ -70,19 +72,19 @@ As a representative of our organization, please provide a professional and infor
 
 Answer:
 """
-embeddings = OpenAIEmbeddings(model_name="gpt-4", openai_api_key=OPENAI_API_KEY)
+embeddings = OpenAIEmbeddings(model_name="gpt-4.0-turbo", openai_api_key=OPENAI_API_KEY)
 pinecone.init(
     api_key=PINECONE_API_KEY,
     environment=PINECONE_ENVIRONMENT,
 )
 index_name = "chatbot"
 docsearch = Pinecone.from_existing_index(index_name, embeddings)
-llm = OpenAI(temperature=0.7, openai_api_key=OPENAI_API_KEY)
+llm = OpenAI(temperature=0.8, openai_api_key=OPENAI_API_KEY)
 retriever = docsearch.as_retriever()
 prompt = PromptTemplate(
     input_variables=["history", "context", "question"],
     template=template,
-    max_tokens=50
+    max_tokens=2000
 )
 qa = RetrievalQA.from_chain_type(
     llm=llm,
@@ -92,26 +94,11 @@ qa = RetrievalQA.from_chain_type(
     chain_type_kwargs={
         "verbose": False,
         "prompt": prompt,
-        "memory": ConversationSummaryBufferMemory(
+        "memory": ConversationBufferMemory(
             memory_key="history",
-            input_key="question",
-            llm=llm,max_token_limit=200),
+            input_key="question"),
     }
 )
-@app.websocket("/ws")
-'''async def websocket_endpoint(websocket: WebSocket):
-    await websocket.accept()
-    while True:
-        data = await websocket.receive_text()
-        try:
-            response = qa.run(data,max_tokens=100)
-            await websocket.send_text(response)
-        except Exception as e:
-            # Handle the exception (e.g., log it)
-            print(f"Error: {str(e)}")
-            # Continue the loop to keep the connection alive
-            continue'''
-
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
@@ -123,15 +110,11 @@ async def websocket_endpoint(websocket: WebSocket):
 @app.post("/query/")
 async def get_response(query: str):
     if not query:
-        raise HTTPException(status_code=400, detail="Query not provided")
-    try:
-        response = qa.run({"query": query})
-        return {"response": response}
-    except Exception as e:
-        # Handle the exception (e.g., log it)
-        print(f"Error: {str(e)}")
-        # Customize the response message for your specific use case
-        raise HTTPException(status_code=400, detail="Make your question more specific")
+        return {"error": "Query not provided"}
+
+    response = qa.run({"query": query})
+    return {"response": response}
+
 
 if __name__ == "__main__":
     import uvicorn
