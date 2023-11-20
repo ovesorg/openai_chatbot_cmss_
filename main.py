@@ -66,33 +66,8 @@ The solar lantern offers three brightness levels, making it versatile and ideal 
 
 With a full charge, the LUMN™ Solar Lantern can operate for up to 6-36 hours, depending on the selected brightness level. This feature ensures long-lasting performance and reliable illumination, even during extended periods of use. The lantern is designed to be energy-efficient, making it an eco-friendly and cost-effective lighting solution.
 
-The LUMN™ Solar Lantern is a high-quality product that meets the IEC TS 62257-9-8 quality standard. It has been tested and certified to ensure optimal performance and durability, making it a reliable lighting solution for various applications. The product comes with a warranty, providing customers with peace of mind and assurance of its quality.Score: True
-Q2: tell me about Farm Lighting Pack
-A: This CAMP™ Solar Home Lighting Pack is the most popular and convenient when setting up large business spaces that require continuous exposure to bright light. The 12V DC System Includes; - 75W Solar Panel - 18Ah Lithium Battery Hub - Eight LED Tube Lights - Torch
-
-This pack is very convenient in bringing out the feel of a modern business such as a chicken farm among others, as the tube lights have a unique modern design that shine brightest in the dark, and a remote-control torch that can be used to switch the LED tube lights on and off, or change the brightness level modes.
-
-This product is PAYG available, comes with a warranty and has been tested and certified to IEC TS 62257-9-8 quality standards.
-
-Have a look at the datasheet for the detailed product specifications
+The LUMN™ Solar Lantern is a high-quality product that meets the IEC TS 62257-9-8 quality standard. It has been tested and certified to ensure optimal performance and durability, making it a reliable lighting solution for various applications. The product comes with a warranty, providing customers with peace of mind and assurance of its quality.
 Score: True
-Q3: tell me about Solar 40" TV Pack D2
-A: This CAMP™ Solar TV pack is the brightest Solar Home System for homes and businesses who love big screens and very bright lighting for a longer run time. The 12V DC System Includes;
-
-75W Solar Panel
-18Ah Lithium Battery Hub
-Low Consumption 40'' Television with Integrated Satellite Decoder and HDMI
-Five LED Tube Lights
-One Security Lamp
-Torch
-This pack will last you for longer hours of television entertainment and education and smartphone charging at any time, while having bright light the whole night. The security lamp has a motion sensor functionality which can help keep business running even during the night.
-
-This product is PAYG available, comes with a warranty and has been tested and certified to IEC TS 62257-9-8 quality standards. Have a look at the datasheet for the detailed product specifications.
-Score: True
-Q:mention to me any electric motorcycle
-A:The electric motorcycle ovEgo E-3 Plus is benchmarked against Boxer 150cc ICE motorcycle and Upgraded version, Consisting of Body, Motor, Drives, Brakes, and Wheels - Excellent Acceleration - Rated 80 km/h with Burst Speed Up To 100 km/h - High Load Carrying Capability - Steep Climbing Capability - Center-Mount Brushless DC Motor with High-Efficiency SVPWM Motor Controllers - Proprietary LFP Battery Module
-Score:True
-Follow the above examples in answering questions.
 <ctx>
 {context}
 </ctx>
@@ -104,7 +79,13 @@ Follow the above examples in answering questions.
 {question}
 
 Answer:
+
+
+ Repeat the above template for other questions with appropriate modifications.
 """
+
+# Repeat the above template for other questions with appropriate modifications.
+
 embeddings = OpenAIEmbeddings(model_name="gpt-4.0-turbo", openai_api_key=OPENAI_API_KEY)
 pinecone.init(
     api_key=PINECONE_API_KEY,
