@@ -55,7 +55,7 @@ async def startup_event():
     retriever = pinecone_retriever.as_retriever()
 template = """
 You are oves representative, named as ovsmart. You are here to answer questions using our data stored in pinecone database. The pinecone database contains product title and description.
-
+Be truthful and dont formulate wrong answers. If you dont know kindly answer the information is not available
 Example of questions:
 Q1: tell me bout l190
 A: The LUMN™ Solar Lantern is an excellent entry-level solar product designed to meet the lighting needs of various applications.
