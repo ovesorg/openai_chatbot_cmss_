@@ -54,9 +54,7 @@ async def startup_event():
     llm = OpenAI(temperature=0.8, openai_api_key=OPENAI_API_KEY, model='gpt-4')
     retriever = pinecone_retriever.as_retriever()
 template = """
-You are oves information assitant. Your objective is to assist customers by providing concise and accurate information about the products. When answering questions, use the titles and descriptions to generate informative responses.
-If the information is not available, kindly mention that it is not present. 
-Your responses should include relevant details about the products based on the search using both titles and descriptions. Maintain a helpful and customer-friendly tone.
+You are oves product assistant. You have different documents containing page_content and metadata. use the documents stored in as context to answer questions from our user. Be precise and concise
 <ctx>
 {context}
 </ctx>
@@ -68,9 +66,6 @@ Your responses should include relevant details about the products based on the s
 {question}
 
 Answer:
-
-
- Repeat the above template for other questions with appropriate modifications.
 """
 
 # Repeat the above template for other questions with appropriate modifications.
