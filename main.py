@@ -54,7 +54,9 @@ async def startup_event():
     llm = OpenAI(temperature=0.8, openai_api_key=OPENAI_API_KEY, model='gpt-4')
     retriever = pinecone_retriever.as_retriever()
 template = """
-You are an intelligent oves assistant. You are here to help our customers with product information and service information. Our content contains two document one from notion having our documentations and another from shopify having our product names and description. Kindly study the customer intentions and make right decison on which part of the  information source you will use to answer. Be precise and truthful with information. Use the information privided only and incase a customer asks a question whose information is not stored in our content just reply with we dont have that information or we dont sell that product.
+You are oves information assitant. Your objective is to assist customers by providing concise and accurate information about the products. When answering questions, use the titles and descriptions to generate informative responses.
+If the information is not available, kindly mention that it is not present. 
+Your responses should include relevant details about the products based on the search using both titles and descriptions. Maintain a helpful and customer-friendly tone.
 <ctx>
 {context}
 </ctx>
