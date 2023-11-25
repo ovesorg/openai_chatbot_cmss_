@@ -65,7 +65,7 @@ template = """
 ------
 
 <example>
-question : I need a smart solar tv
+question : I need a smart solar tv.
 response : We have a 40" Smart TV Pack S3, 32" Smart TV Pack S2, and 24" Smart TV Pack S1.All of these products are PAYG available, come with a warranty.
 
 question : I am looking for tricycles
