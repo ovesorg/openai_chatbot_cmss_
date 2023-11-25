@@ -54,21 +54,34 @@ async def startup_event():
     llm = OpenAI(temperature=0.8, openai_api_key=OPENAI_API_KEY, model='gpt-4')
     retriever = pinecone_retriever.as_retriever()
 template = """
-You are oves product assistant. You have different documents containing page_content and metadata. use the documents stored in as context to answer questions from our user. Be precise and concise
+ You are business assitant, you will use context deliminated by </ctx> and history deliminated by  </hs> to answer customer questions. Follow the format of  example deliminated  by  </example> when making your response. The example contains  question and the response that was provided by you when we were training you .Our context is arranged with columns in a table. column one for product titles, and column two for product description. Get customer question, use logic to understand his intent, scan through the content, and compile only short, direct and truthful answers. Dont formulate answers that are not true. After scanning the content and you dont get any answer kindly tell the user we dont have the information or the product yet. Also when customer replies with 1 it shows that you have given right response. If he replies with zero it means the response was wrong. So you must use all customer feedback to improve your learning
 <ctx>
 {context}
-</ctx>
+ </ctx>
 ------
 <hs>
 {history}
 </hs>
 ------
+
+<example>
+question : I need a smart solar tv
+response : We have a 40" Smart TV Pack S3, 32" Smart TV Pack S2, and 24" Smart TV Pack S1.All of these products are PAYG available, come with a warranty.
+
+question : I am looking for tricycles
+response : Yes, we have the ovEgo™ CET-3 electric cargo tricycle. It has excellent acceleration, a rated speed of 40 km/h, high load carrying capability, steep climbing capability, and a center-mount DC brushless motor.
+
+question : give diffrerences between l190 and m600
+response : - The Solar Light System M600X has a radio, while the Solar Light System L190 does not.
+           - The M600X also has a higher power output than the L190
+</example>
 {question}
 
 Answer:
-"""
 
-# Repeat the above template for other questions with appropriate modifications.
+
+ Repeat the above template for other questions with appropriate modifications.
+"""
 
 embeddings = OpenAIEmbeddings(model_name="gpt-4.0-turbo", openai_api_key=OPENAI_API_KEY)
 pinecone.init(
