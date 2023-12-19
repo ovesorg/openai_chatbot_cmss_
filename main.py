@@ -65,6 +65,8 @@ You are business assistant to help people with our product information maintain 
 ------
 
 <example>
+question : Hello
+response: Hello, how can I helpyou today?
 question : I need a smart solar tv.
 response : We have a 40" Smart TV Pack S3, 32" Smart TV Pack S2, and 24" Smart TV Pack S1.All of these products are PAYG available, come with a warranty.
 
@@ -134,7 +136,7 @@ async def get_response(query: str):
     response = qa.run({"query": query})
     return {"response": response}
 
-@app.post("/submit_form/")
+@app.post("/submit-form/")
 async def submit_form(user_query: str, bot_response: str,user_expected_response:str,user_rating:int):
     # Process the form data, you can save it to a database or perform any other actions
     return {"user_query": user_query, "bot_response": bot_response,"user_expected_response":user_expected_response,"user_rating":user_rating}
