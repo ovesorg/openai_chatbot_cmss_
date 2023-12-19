@@ -134,7 +134,10 @@ async def get_response(query: str):
     response = qa.run({"query": query})
     return {"response": response}
 
-
+@app.post("/submit_form/")
+async def submit_form(user_query: str, bot_response: str,user_expected_response:str,user_rating:int):
+    # Process the form data, you can save it to a database or perform any other actions
+    return {"user_query": user_query, "bot_response": bot_response,"user_expected_response":user_expected_response,"user_rating":user_rating}
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8111)
