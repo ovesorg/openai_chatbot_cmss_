@@ -118,7 +118,7 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     while True:
         data = await websocket.receive_text()
-        print(data)
+        print(data,flush=True)
         try:
           response = qa.run(data)
           await websocket.send_text(response)
