@@ -29,7 +29,10 @@ app = FastAPI()
 
 # Load environment variables from .env file
 load_dotenv()
-
+OUTPUT_DIR= os.getcwd()
+f = open(os.path.join(OUTPUT_DIR, 'feedback.txt'), 'a')
+f.write('\nTest User feedback.')
+f.close()
 # Access the variables
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 PINECONE_API_KEY = "199b3561-863a-41a7-adfb-db5f55e505ac"
