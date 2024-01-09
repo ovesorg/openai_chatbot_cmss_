@@ -28,14 +28,6 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
 # Configure CORS (enable all origins, allow credentials, allow all methods, allow all headers)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 # Load environment variables from .env file
 load_dotenv()
 OUTPUT_DIR= os.getcwd()
@@ -133,6 +125,7 @@ async def websocket_endpoint(websocket: WebSocket):
         if isinstance(data, dict) or (isinstance(data, str) and data.startswith('{') and data.endswith('}')):
             print("This is feedback message",flush=True)
         else:
+            print("This is user query")
             try:
               response = qa.run(data)
               await websocket.send_text(response)
