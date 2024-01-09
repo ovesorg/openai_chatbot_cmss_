@@ -130,24 +130,39 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     while True:
         data = await websocket.receive_text()
-        print(data,flush=True)
-        try:
-          response = qa.run(data)
-          await websocket.send_text(response)
-        except Exception as e:
-          # Handle the exception (e.g., log it)
-          print(f"Error: {str(e)}")
-          # Continue the loop to keep the connection alive
-          continue
+        if isinstance(data, dict) or (isinstance(data, str) and data.startswith('{') and data.endswith('}')):
+            print("This is feedback message",flush=True)
+        else:
+            try:
+              response = qa.run(data)
+              await websocket.send_text(response)
+            except Exception as e:
+              # Handle the exception (e.g., log it)
+              print(f"Error: {str(e)}")
+              # Continue the loop to keep the connection alive
+              continue
 
 
 @app.post("/query/")
 async def get_response(query: str):
     if not query:
-        return {"error": "Query not provided"}
+        raise HTTPException(status_code=400, detail="Query not provided")
+    if isinstance(query, dict) or (isinstance(query, str) and query.startswith('{') and query.endswith('}')):
+        print("This is feedback message",flush=True)
 
-    response = qa.run({"query": query})
-    return {"response": response}
+    else:
+        print("user query received")
+        print(query)
+        try:
+            response = qa.run({"query": query})
+            print(response, flush=True)
+            return {"response": response}
+        except Exception as e:
+            # Handle the exception (e.g., log it)
+            print(f"Error: {str(e)}")
+            # Customize the response message for your specific use case
+            raise HTTPException(status_code=400, detail="Make your question more specific")
+
 
 @app.post("/submit-form/")
 async def submit_form(user_query: str, bot_response: str,user_expected_response:str,user_rating:int):
