@@ -7,6 +7,9 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 COPY . /app
 
+# Copy sample.txt to /app/sample.txt
+COPY sample.txt /app/sample.txt
+
 # Install necessary tools and the required packages
 RUN apt-get update && \
     apt-get install -y --no-install-recommends gcc g++ && \
