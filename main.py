@@ -23,9 +23,18 @@ from langchain.vectorstores import Pinecone
 import pinecone
 import secrets
 import json
-
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+# Configure CORS (enable all origins, allow credentials, allow all methods, allow all headers)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Load environment variables from .env file
 load_dotenv()
