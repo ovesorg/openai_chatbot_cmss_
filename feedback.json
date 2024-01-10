@@ -1,0 +1,14 @@
+{
+    "type": "service_account",
+    "project_id": "payment-tracker-403805",
+    "private_key_id": "3103fe394490712cf1ec9c9241bea823d5ab06f9",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCf+MD5FyjmcbJy\nun71IHkXtZ8uAps8/vis+70EhBC91WsuDl8C/0mIP8J8ftcvOsaNjXIzWp7mBSK5\nKuyU/r8lxhJNg9GKxmsEpQQXvpW5O0TS9TDF/A6fpiV7KVaBZpeCoYi28KMvxnvf\n5vqLG3pC2yrFLxE61g1z1IxaqoUIPeUwnPY+z+X7V/8BXsBE+TsG7fb/AizpK7Yk\nUw2Gh7XqZiuv0mw6U/UmNtedv4zcQNWH3rPbQaE7BBXGCqjLzdJ98cuANKHwcQQO\nbxCofKf7lEXFB6QJIpwxYuiPPBVqjUJ02rLkA4yWP2PwGQEF1e1lda2bwzvo/Yev\n6vmVGyNTAgMBAAECggEACfcSelHVg+lwPtJcR0PTF0WCmXijF/0gG5KA90+MxW6O\ngyt1ArhJadni8SNrny8PoFC/3PAXtud5/sPsQenOmXlJuZdtDbKHhx4Kb7o5FHVb\nN7L7a1HkzVApxI7SKzRrWsFaRV8fI0I/hDacw96d0p1ZgDgK4DnmU6FZbupxaA5t\nt85jdZM1r1isc6DDYRazbg9TeRyYDIKKpucBSPpjQaJlMa2xXGDbZ5sV1IiiwrUX\nkwYnNxjZpcGBkD3SJk9Gm/EKaJOScQADuuRjUKolpDZvuALhGd8IIdzERJiRlexK\nAANqTKNhGNEV1bgfvJk+4CY92M6FW2YJ3aDOR/4GPQKBgQDaaMzBnq4oH3y6aBuF\npa9eVPV8W4N6/e54RTxmNChe+5/FEob+dxLfe5edc7I6QR/cwEMhfHKWQPufMUzR\nfmt63pWtGuyInXP5Vglhv9BBnY0bCzszNR2wJlZC6TNfm/rg40LlkQD/0FmW7Nlg\n+RRDp3DQTUiYqNA+jN8tjsTwJQKBgQC7gSrk5XGFAv6Nmghw53V5MdhG8N7oh6fF\nKiN3Ifu/JlreoWCvETdg8rw7qWlThmnZw5SImpBqOLLhQsqLw48+zvHfJgsNh+Jg\nikzmruRAmGcs1GlTZy73dmDSliXrjAxBoc7Wwh1vsjpJ37pQReIlkCxOpVYJv/LD\nh6Xvh4ZQFwKBgQC8RcbryQu7zpjIX2IKLS8lE/uhvYlzhl4BEz3jpGaAqkupqDTy\nOlbsiy/BLLCggu8ibiHwRcTJPS8qpWbg2CdyfVltJV5szb3hW4cu2hh914CBpYbc\nt5bl98Y4W6pLarwzC/Toy7yeyE3SSk2AyHXtc/NNvLEt16fbo7fnH8EoeQKBgQCp\nJSx8sD5nrvvS4VEcCLCAU+a2mDN9sGI4CntTzOQ822y9yPZe9zjtzAriB0Fsh6SV\nPUmQsV31dJBphMcSradbEXQ/ySHPYvVkAV69+qcNXm40kqkxA7PqqG9PiQNMKVol\nGsJsGVBUooLSgXChWWlYWWaey6eBxBZLLOMT4T3YoQKBgCFjcIpfMkMj0ecKEtyW\n1eBr9xvD2Fem5ENO/u6yUmHhUtCVqdoPkjtifXuvb2lY7gxTbsjMN8seWK1A9bcw\nWLk5z3O+pZcVg/ef5YgD/biGLXDInacXQaKq1Mvd65ADnbj1Q1u2ouECNcGqSrm+\nkOQyUXYvGxumM9lAWVUkYbaD\n-----END PRIVATE KEY-----\n",
+    "client_email": "okopay@payment-tracker-403805.iam.gserviceaccount.com",
+    "client_id": "104444257508365975113",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/okopay%40payment-tracker-403805.iam.gserviceaccount.com",
+    "universe_domain": "googleapis.com"
+  }
+  
