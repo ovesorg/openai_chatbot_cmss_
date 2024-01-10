@@ -36,8 +36,8 @@ f = open(os.path.join(OUTPUT_DIR, 'feedback.txt'), 'a')
 f.write('\nTest User feedback.')
 f.close()
 # Access the variables
-#OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-OPENAI_API_KEY = "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"
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+#OPENAI_API_KEY = "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"
 PINECONE_API_KEY = "199b3561-863a-41a7-adfb-db5f55e505ac"
 PINECONE_ENVIRONMENT = "eu-west4-gcp"
 
