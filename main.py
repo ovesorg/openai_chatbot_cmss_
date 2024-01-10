@@ -36,8 +36,8 @@ f = open(os.path.join(OUTPUT_DIR, 'feedback.txt'), 'a')
 f.write('\nTest User feedback.')
 f.close()
 # Access the variables
-#OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-OPENAI_API_KEY = "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"
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+#OPENAI_API_KEY = "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"
 PINECONE_API_KEY = "199b3561-863a-41a7-adfb-db5f55e505ac"
 PINECONE_ENVIRONMENT = "eu-west4-gcp"
 
@@ -183,4 +183,4 @@ async def submit_form(user_query: str, bot_response: str,user_expected_response:
     return {"user_query": user_query, "bot_response": bot_response,"user_expected_response":user_expected_response,"user_rating":user_rating}
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="0.0.0.1", port=8111)
