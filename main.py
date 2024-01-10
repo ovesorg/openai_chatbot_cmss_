@@ -13,6 +13,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from typing import Optional
+from feedback import save_feedback_to_sheets
 import base64
 from pydantic import BaseModel
 from dotenv import load_dotenv
@@ -36,6 +37,7 @@ f.write('\nTest User feedback.')
 f.close()
 # Access the variables
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+#OPENAI_API_KEY = "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"
 PINECONE_API_KEY = "199b3561-863a-41a7-adfb-db5f55e505ac"
 PINECONE_ENVIRONMENT = "eu-west4-gcp"
 
@@ -124,6 +126,15 @@ async def websocket_endpoint(websocket: WebSocket):
         data = await websocket.receive_text()
         if isinstance(data, dict) or (isinstance(data, str) and data.startswith('{') and data.endswith('}')):
             print("This is feedback message",flush=True)
+
+            # Assuming save_feedback_to_sheets is a function in feedback_module that handles feedback saving
+            try:
+                save_feedback_to_sheets(data)
+                print("Feedback saved to Google Sheets", flush=True)
+                return {"message": "Feedback saved successfully"}
+            except Exception as e:
+                print(f"Error saving feedback: {str(e)}")
+                raise HTTPException(status_code=500, detail="Internal server error")
         else:
             print("This is user query")
             try:
@@ -141,7 +152,16 @@ async def get_response(query: str):
     if not query:
         raise HTTPException(status_code=400, detail="Query not provided")
     if isinstance(query, dict) or (isinstance(query, str) and query.startswith('{') and query.endswith('}')):
-        print("This is feedback message",flush=True)
+        print("This is feedback message", flush=True)
+
+        # Assuming save_feedback_to_sheets is a function in feedback_module that handles feedback saving
+        try:
+            save_feedback_to_sheets(query)
+            print("Feedback saved to Google Sheets", flush=True)
+            return {"message": "Feedback saved successfully"}
+        except Exception as e:
+            print(f"Error saving feedback: {str(e)}")
+            raise HTTPException(status_code=500, detail="Internal server error")
 
     else:
         print("user query received")
@@ -163,4 +183,4 @@ async def submit_form(user_query: str, bot_response: str,user_expected_response:
     return {"user_query": user_query, "bot_response": bot_response,"user_expected_response":user_expected_response,"user_rating":user_rating}
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8111)
+    uvicorn.run(app, host="0.0.0.1", port=8111)
