@@ -157,7 +157,7 @@ async def handle_websocket(websocket: WebSocket):
             await asyncio.sleep(5)  # 5 seconds delay (adjust as needed)
 
             # Re-accept the WebSocket connection
-            await websocket.accept()
+            continue
 
 # Define the WebSocket route
 @app.websocket("/ws")
