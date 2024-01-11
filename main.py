@@ -124,7 +124,11 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     while True:
         data = await websocket.receive_text()
-        if isinstance(data, dict) or (isinstance(data, str) and data.startswith('{') and data.endswith('}')):
+        osokoto = json.loads(data)
+        length_dict = len(osokoto)
+        if length_dict == 4:
+            
+        #if isinstance(data, dict) or (isinstance(data, str) and data.startswith('{') and data.endswith('}')):
             print("This is feedback message",flush=True)
 
             # Assuming save_feedback_to_sheets is a function in feedback_module that handles feedback saving
@@ -137,8 +141,10 @@ async def websocket_endpoint(websocket: WebSocket):
                 raise HTTPException(status_code=500, detail="Internal server error")
         else:
             print("This is user query")
+            print("this is user query", osokoto[0])
+            print("this is user email", osokoto[1])
             try:
-              response = qa.run(data)
+              response = qa.run(osokoto[0])
               await websocket.send_text(response)
             except Exception as e:
               # Handle the exception (e.g., log it)
