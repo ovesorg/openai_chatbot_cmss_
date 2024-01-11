@@ -1,4 +1,5 @@
 from langchain import OpenAI
+import asyncio
 from fastapi import FastAPI, WebSocket
 from langchain.chains import RetrievalQA
 from langchain.embeddings.openai import OpenAIEmbeddings
