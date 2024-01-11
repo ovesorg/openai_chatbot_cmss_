@@ -125,18 +125,30 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     while True:
         data = await websocket.receive_text()
-        if isinstance(data, dict) or (isinstance(data, str) and data.startswith('{') and data.endswith('}')):
-            print("This is feedback message",flush=True)
-        else:
-            print("This is user query")
-            try:
-              response = qa.run(data)
-              await websocket.send_text(response)
-            except Exception as e:
-              # Handle the exception (e.g., log it)
-              print(f"Error: {str(e)}")
-              # Continue the loop to keep the connection alive
-              continue
+        try:
+            json_data = json.loads(data)
+            if "input" in json_data:
+                # This is a user query
+                print("This is user query")
+                try:
+                    response = qa.run(json_data["input"])
+                    await websocket.send_text(response)
+                except Exception as e:
+                    # Handle the exception (e.g., log it)
+                    print(f"Error: {str(e)}")
+                    # Continue the loop to keep the connection alive
+                    continue
+            elif "user_query" in json_data:
+                # This is a feedback message
+                print("This is feedback message", flush=True)
+            else:
+                # Unexpected data format
+                print("Unknown data format")
+        except json.JSONDecodeError:
+            # Handle JSON decoding error
+            print("Error decoding JSON")
+            continue
+
 
 @app.post("/query/")
 async def get_response(query: str):
