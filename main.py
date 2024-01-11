@@ -6,7 +6,7 @@ from langchain.memory import ConversationBufferMemory
 from langchain.memory import ConversationSummaryBufferMemory
 from langchain import PromptTemplate
 from langchain.chains import ConversationChain
-from fastapi import FastAPI,Request, WebSocket, Form,Depends, HTTPException
+from fastapi import FastAPI,Request, WebSocket, Form,Depends, HTTPException, WebSocketDisconnect
 from fastapi.security import HTTPBasicCredentials
 from passlib.context import CryptContext
 from fastapi.responses import HTMLResponse
