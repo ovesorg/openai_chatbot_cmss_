@@ -139,7 +139,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     # Continue the loop to keep the connection alive
                     continue
             elif "user_query" in json_data:
-                # This is a feedback message
+                save_feedback_to_sheets(data)
                 print("This is feedback message", flush=True)
             else:
                 # Unexpected data format
