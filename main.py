@@ -122,43 +122,36 @@ qa = RetrievalQA.from_chain_type(
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
-
-    try:
-        while True:
-            data = await websocket.receive_text()
-            print(data)
+    while True:
+        data = await websocket.receive_text()
+        print(data)
+        osokoto = json.loads(data)
+        length_dict = len(osokoto)
+        if length_dict == 4:
             
+        #if isinstance(data, dict) or (isinstance(data, str) and data.startswith('{') and data.endswith('}')):
+            print("This is feedback message",flush=True)
+
+            # Assuming save_feedback_to_sheets is a function in feedback_module that handles feedback saving
             try:
-                osokoto = json.loads(data)
-                message_type = osokoto.get("message_type")
-
-                if "input" in osokoto and "email" in osokoto:
-                    # This is a user query
-                    #print("This is user query")
-                    response = qa.run(osokoto["input"])
-                    await websocket.send_text(response)
-
-                elif (
-                    "user_query" in osokoto
-                    and "bot_response" in osokoto
-                    and "user_expected_response" in osokoto
-                    and "user_ratings" in osokoto
-                ):
-                    # This is a feedback message
-                    print("This is feedback message", flush=True)
-                    save_feedback_to_sheets(osokoto)
-                    print("Feedback saved to Google Sheets", flush=True)
-                    #await websocket.send_text("Feedback saved successfully")
-
-                else:
-                    print("Unknown message format")
-
-            except json.JSONDecodeError as e:
-                print(f"Error decoding JSON: {str(e)}")
-
-    except WebSocketDisconnect:
-        print("WebSocket disconnected")
-
+                save_feedback_to_sheets(data)
+                print("Feedback saved to Google Sheets", flush=True)
+                return {"message": "Feedback saved successfully"}
+            except Exception as e:
+                print(f"Error saving feedback: {str(e)}")
+                raise HTTPException(status_code=500, detail="Internal server error")
+        else:
+            print("This is user query")
+            print("this is user query", osokoto["input"])
+            print("this is user email", osokoto["email"])
+            try:
+              response = qa.run(osokoto["input"])
+              await websocket.send_text(response)
+            except Exception as e:
+              # Handle the exception (e.g., log it)
+              print(f"Error: {str(e)}")
+              # Continue the loop to keep the connection alive
+              continue
 
 @app.post("/query/")
 async def get_response(query: str):
