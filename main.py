@@ -119,7 +119,55 @@ qa = RetrievalQA.from_chain_type(
             llm=llm,max_token_limit=200),
     }
 )
+async def handle_websocket(websocket: WebSocket):
+    await websocket.accept()
+
+    while True:
+        try:
+            data = await websocket.receive_text()
+            print(data)
+
+            try:
+                osokoto = json.loads(data)
+                message_type = osokoto.get("message_type")
+
+                if message_type == "feedback":
+                    print("This is feedback message", flush=True)
+                    save_feedback_to_sheets(osokoto)
+                    print("Feedback saved to Google Sheets", flush=True)
+                    await websocket.send_text("Feedback saved successfully")
+
+                elif message_type == "query":
+                    print("This is user query")
+                    response = qa.run(osokoto["input"])
+                    await websocket.send_text(response)
+
+                else:
+                    print("Unknown message type")
+
+            except json.JSONDecodeError as e:
+                print(f"Error decoding JSON: {str(e)}")
+
+        except WebSocketDisconnect:
+            print("WebSocket disconnected. Reconnecting...")
+            # Optionally perform cleanup or additional handling here
+
+            # Attempt to reconnect after a delay
+            await asyncio.sleep(5)  # 5 seconds delay (adjust as needed)
+
+            # Re-accept the WebSocket connection
+            await websocket.accept()
+
+# Define the WebSocket route
 @app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    while True:
+        try:
+            await handle_websocket(websocket)
+        except Exception as e:
+            print(f"Error in WebSocket handling: {str(e)}")
+            await asyncio.sleep(2)  # 5 seconds delay before attempting to reconnect
+'''@app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     while True:
@@ -151,7 +199,7 @@ async def websocket_endpoint(websocket: WebSocket):
               # Handle the exception (e.g., log it)
               print(f"Error: {str(e)}")
               # Continue the loop to keep the connection alive
-              continue
+              continue'''
 
 @app.post("/query/")
 async def get_response(query: str):
