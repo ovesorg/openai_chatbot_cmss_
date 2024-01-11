@@ -121,8 +121,6 @@ qa = RetrievalQA.from_chain_type(
     }
 )
 async def handle_websocket(websocket: WebSocket):
-    await websocket.accept()
-
     while True:
         try:
             data = await websocket.receive_text()
@@ -156,18 +154,20 @@ async def handle_websocket(websocket: WebSocket):
             # Attempt to reconnect after a delay
             await asyncio.sleep(5)  # 5 seconds delay (adjust as needed)
 
-            # Re-accept the WebSocket connection
-            continue
+            # Break out of the loop to allow the outer loop to re-run handle_websocket
+            break
 
 # Define the WebSocket route
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()  # Accept the WebSocket connection outside the loop
+
     while True:
         try:
             await handle_websocket(websocket)
         except Exception as e:
             print(f"Error in WebSocket handling: {str(e)}")
-            await asyncio.sleep(2)  # 5 seconds delay before attempting to reconnect
+            await asyncio.sleep(5)  # 5 seconds delay before attempting to reconnect
 '''@app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
