@@ -141,10 +141,10 @@ async def websocket_endpoint(websocket: WebSocket):
                 raise HTTPException(status_code=500, detail="Internal server error")
         else:
             print("This is user query")
-            print("this is user query", osokoto[0])
-            print("this is user email", osokoto[1])
+            print("this is user query", osokoto["input"])
+            print("this is user email", osokoto["email"])
             try:
-              response = qa.run(osokoto[0])
+              response = qa.run(osokoto["input"])
               await websocket.send_text(response)
             except Exception as e:
               # Handle the exception (e.g., log it)
