@@ -124,7 +124,8 @@ qa = RetrievalQA.from_chain_type(
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     try:
-        await websocket.send_text("This is message for testing dialogue histiry")
+        await websocket.send_text("}, {'type': 'bot', 'text': 'Yes we have l190'}, {'type': 'user', 'text': 'I need l190'}]
+")
     except Exception as e:
         # Handle the exception (e.g., log it or print an error message)
         print(f"Error: {e}")
