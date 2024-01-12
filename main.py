@@ -9,6 +9,7 @@ from langchain import PromptTemplate
 from langchain.chains import ConversationChain
 from fastapi import FastAPI,Request, WebSocket, Form,Depends, HTTPException, WebSocketDisconnect
 from fastapi.security import HTTPBasicCredentials
+
 from passlib.context import CryptContext
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -124,8 +125,17 @@ qa = RetrievalQA.from_chain_type(
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     try:
-        await websocket.send_text("}, {'type': 'bot', 'text': 'Yes we have l190'}, {'type': 'user', 'text': 'I need l190'}]
-")
+                
+        dialogue_history = [
+            {'type': 'bot', 'text': 'Hello to you'},
+            {'type': 'user', 'text': 'Hello'},
+            {'type': 'bot', 'text': 'yes we have'},
+            {'type': 'user', 'text': 'I want tv'},
+            {'type': 'bot', 'text': 'Yes we have l190'},
+            {'type': 'user', 'text': 'I need l190'}
+        ]
+        dialogue_history_string = json.dumps(dialogue_history)
+        await websocket.send_text(dialogue_history_string)
     except Exception as e:
         # Handle the exception (e.g., log it or print an error message)
         print(f"Error: {e}")
