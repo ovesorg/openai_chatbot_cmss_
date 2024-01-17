@@ -88,9 +88,6 @@ response : - The Solar Light System M600X has a radio, while the Solar Light Sys
 {question}
 
 Answer:
-
-
- Repeat the above template for other questions with appropriate modifications.
 """
 
 embeddings = OpenAIEmbeddings(model = 'text-embedding-ada-002', openai_api_key=OPENAI_API_KEY)
