@@ -175,22 +175,26 @@ async def websocket_endpoint(websocket: WebSocket):
             {'type': 'user', 'text': 'I need l190'}
         ]
     dialogue_history_string = json.dumps(dialogue_history)
-    await websocket.send_text(dialogue_history_string
+    await websocket.send_text(dialogue_history_string)
+
     while True:
         data = await websocket.receive_text()
-        if type(data) == dict:
-            print("This is feedback message",flush=True)
-        else:
-            print("json_data is not a dictionary.",flush=True)
-            print(data,flush=True)
+        try:
+            # Attempt to parse JSON data
+            json_data = json.loads(data)
+            if isinstance(json_data, dict):
+                print("This is feedback message", flush=True)
+            else:
+                print("Received data is not a dictionary.", flush=True)
+        except json.JSONDecodeError:
+            # Handle non-JSON data (assuming it's a query)
+            print("Received non-JSON data:", data, flush=True)
             try:
-              response = qa.run(data)
-              await websocket.send_text(response)
+                response = qa.run(data)
+                await websocket.send_text(response)
             except Exception as e:
-              # Handle the exception (e.g., log it)
-              print(f"Error: {str(e)}")
-              # Continue the loop to keep the connection alive
-              continue
+                print(f"Error processing query: {str(e)}")
+                continue
 @app.post("/query/")
 async def get_response(query: str):
     if not query:
