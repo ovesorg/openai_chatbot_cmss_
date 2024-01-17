@@ -118,7 +118,7 @@ qa = RetrievalQA.from_chain_type(
     }
 )
 
-'''@app.websocket("/ws")
+@app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     try:
@@ -162,8 +162,8 @@ async def websocket_endpoint(websocket: WebSocket):
             # Handle JSON decoding error
             print("Error decoding JSON")
             continue
-'''
-@app.websocket("/ws")
+
+'''@app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     while True:
@@ -180,7 +180,7 @@ async def websocket_endpoint(websocket: WebSocket):
               # Handle the exception (e.g., log it)
               print(f"Error: {str(e)}")
               # Continue the loop to keep the connection alive
-              continue
+              continue'''
 @app.post("/query/")
 async def get_response(query: str):
     if not query:
