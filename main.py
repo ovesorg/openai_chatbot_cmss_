@@ -121,21 +121,6 @@ qa = RetrievalQA.from_chain_type(
 '''@app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
-    try:
-                
-        dialogue_history = [
-            {'type': 'bot', 'text': 'Hello to you'},
-            {'type': 'user', 'text': 'Hello'},
-            {'type': 'bot', 'text': 'yes we have'},
-            {'type': 'user', 'text': 'I want tv'},
-            {'type': 'bot', 'text': 'Yes we have l190'},
-            {'type': 'user', 'text': 'I need l190'}
-        ]
-        dialogue_history_string = json.dumps(dialogue_history)
-        await websocket.send_text(dialogue_history_string)
-    except Exception as e:
-        # Handle the exception (e.g., log it or print an error message)
-        print(f"Error: {e}")
     while True:
         data = await websocket.receive_text()
         print(data)
@@ -180,21 +165,28 @@ async def websocket_endpoint(websocket: WebSocket):
     while True:
         data = await websocket.receive_text()
         try:
-            # Attempt to parse JSON data
             json_data = json.loads(data)
-            if isinstance(json_data, dict):
+            if "input" in json_data:
+                # This is a user query
+                print("This is user query")
+                try:
+                    response = qa.run(json_data["input"])
+                    await websocket.send_text(response)
+                except Exception as e:
+                    # Handle the exception (e.g., log it)
+                    print(f"Error: {str(e)}")
+                    # Continue the loop to keep the connection alive
+                    continue
+            elif "user_query" in json_data:
+                save_feedback_to_sheets(data)
                 print("This is feedback message", flush=True)
             else:
-                print("Received data is not a dictionary.", flush=True)
+                # Unexpected data format
+                print("Unknown data format")
         except json.JSONDecodeError:
-            # Handle non-JSON data (assuming it's a query)
-            print("Received non-JSON data:", data, flush=True)
-            try:
-                response = qa.run(data)
-                await websocket.send_text(response)
-            except Exception as e:
-                print(f"Error processing query: {str(e)}")
-                continue
+            # Handle JSON decoding error
+            print("Error decoding JSON")
+            continue
     '''while True:
         data = await websocket.receive_text()
         print(data)
