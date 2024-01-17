@@ -59,7 +59,7 @@ async def startup_event():
     # )], weights=[1, 0])
     # db = Chroma.from_documents([global_context], embeddings)
     # llm = OpenAI(temperature=0.8, openai_api_key=OPENAI_API_KEY)
-    llm = OpenAI(temperature=0, openai_api_key=OPENAI_API_KEY, model='gpt-4')
+    llm = OpenAI(temperature=0.7, openai_api_key=OPENAI_API_KEY, model='gpt-3.5-turbo-instruct')
     retriever = pinecone_retriever.as_retriever()
 template = """
 You are business assistant to help people with our product information maintain business tone when answering and be official, you will use context deliminated by </ctx> and history deliminated by  </hs> to answer customer questions. Follow the format of  example deliminated  by  </example> when making your response. The example contains  question and the response that was provided by you when we were training you .Our context is arranged with columns in a table. column one for product titles, and column two for product description. Get customer question, use logic to understand his intent, scan through the content, and compile only short, direct and truthful answers. Dont formulate answers that are not true. After scanning the content and you dont get any answer kindly tell the user we dont have the information or the product yet. Also when customer replies with 1 it shows that you have given right response. If he replies with zero it means the response was wrong. So you must use all customer feedback to improve your learning
@@ -115,12 +115,12 @@ qa = RetrievalQA.from_chain_type(
     chain_type_kwargs={
         "verbose": False,
         "prompt": prompt,
-        "memory": ConversationSummaryBufferMemory(
+        "memory": ConversationBufferMemory(
             memory_key="history",
-            input_key="question",
-            llm=llm,max_token_limit=200),
+            input_key="question"),
     }
 )
+
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
