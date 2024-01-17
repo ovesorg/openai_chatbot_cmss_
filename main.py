@@ -93,7 +93,7 @@ Answer:
  Repeat the above template for other questions with appropriate modifications.
 """
 
-embeddings = OpenAIEmbeddings(model_name="gpt-4.0-turbo", openai_api_key=OPENAI_API_KEY)
+embeddings = OpenAIEmbeddings(model = 'text-embedding-ada-002', openai_api_key=OPENAI_API_KEY)
 pinecone.init(
     api_key=PINECONE_API_KEY,
     environment=PINECONE_ENVIRONMENT,
