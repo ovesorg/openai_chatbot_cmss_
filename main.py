@@ -195,7 +195,7 @@ async def websocket_endpoint(websocket: WebSocket):
             except Exception as e:
                 print(f"Error processing query: {str(e)}")
                 continue'''
-        while True:
+    while True:
         data = await websocket.receive_text()
         print(data)
         try:
