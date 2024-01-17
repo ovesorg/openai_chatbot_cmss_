@@ -118,7 +118,7 @@ qa = RetrievalQA.from_chain_type(
     }
 )
 
-@app.websocket("/ws")
+'''@app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     try:
@@ -161,11 +161,21 @@ async def websocket_endpoint(websocket: WebSocket):
         except json.JSONDecodeError:
             # Handle JSON decoding error
             print("Error decoding JSON")
-            continue
+            continue'''
 
-'''@app.websocket("/ws")
+@app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
+    dialogue_history = [
+            {'type': 'bot', 'text': 'Hello to you'},
+            {'type': 'user', 'text': 'Hello'},
+            {'type': 'bot', 'text': 'yes we have'},
+            {'type': 'user', 'text': 'I want tv'},
+            {'type': 'bot', 'text': 'Yes we have l190'},
+            {'type': 'user', 'text': 'I need l190'}
+        ]
+    dialogue_history_string = json.dumps(dialogue_history)
+    await websocket.send_text(dialogue_history_string
     while True:
         data = await websocket.receive_text()
         if type(data) == dict:
@@ -180,7 +190,7 @@ async def websocket_endpoint(websocket: WebSocket):
               # Handle the exception (e.g., log it)
               print(f"Error: {str(e)}")
               # Continue the loop to keep the connection alive
-              continue'''
+              continue
 @app.post("/query/")
 async def get_response(query: str):
     if not query:
