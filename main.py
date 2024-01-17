@@ -100,7 +100,7 @@ pinecone.init(
 )
 index_name = "chatbot"
 docsearch = Pinecone.from_existing_index(index_name, embeddings)
-llm = OpenAI(temperature=0, openai_api_key=OPENAI_API_KEY)
+llm = OpenAI(temperature=0.7, openai_api_key=OPENAI_API_KEY, model='gpt-3.5-turbo-instruct')
 retriever = docsearch.as_retriever()
 prompt = PromptTemplate(
     input_variables=["history", "context", "question"],
