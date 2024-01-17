@@ -141,6 +141,7 @@ async def websocket_endpoint(websocket: WebSocket):
         print(f"Error: {e}")
     while True:
         data = await websocket.receive_text()
+        print(data)
         try:
             json_data = json.loads(data)
             if "input" in json_data:
