@@ -121,7 +121,7 @@ qa = RetrievalQA.from_chain_type(
     }
 )
 
-@app.websocket("/ws")
+'''@app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     try:
@@ -165,8 +165,25 @@ async def websocket_endpoint(websocket: WebSocket):
             # Handle JSON decoding error
             print("Error decoding JSON")
             continue
-
-
+'''
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        data = await websocket.receive_text()
+        if type(data) == dict:
+            print("This is feedback message",flush=True)
+        else:
+            print("json_data is not a dictionary.",flush=True)
+            print(data,flush=True)
+            try:
+              response = qa.run(data)
+              await websocket.send_text(response)
+            except Exception as e:
+              # Handle the exception (e.g., log it)
+              print(f"Error: {str(e)}")
+              # Continue the loop to keep the connection alive
+              continue
 @app.post("/query/")
 async def get_response(query: str):
     if not query:
