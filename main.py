@@ -177,7 +177,7 @@ async def websocket_endpoint(websocket: WebSocket):
     dialogue_history_string = json.dumps(dialogue_history)
     await websocket.send_text(dialogue_history_string)
 
-    while True:
+    '''while True:
         data = await websocket.receive_text()
         try:
             # Attempt to parse JSON data
@@ -194,7 +194,28 @@ async def websocket_endpoint(websocket: WebSocket):
                 await websocket.send_text(response)
             except Exception as e:
                 print(f"Error processing query: {str(e)}")
-                continue
+                continue'''
+        while True:
+        data = await websocket.receive_text()
+        print(data)
+        try:
+            json_data = json.loads(data)
+            if "input" in json_data:
+                print("This is a user query")
+                try:
+                    response = qa.run(json_data["input"])
+                    await websocket.send_text(response)
+                except Exception as e:
+                    print(f"Error processing query: {str(e)}")
+                    continue
+            elif "user_query" in json_data:
+                save_feedback_to_sheets(data)
+                print("This is a feedback message", flush=True)
+            else:
+                print("Unknown data format")
+        except json.JSONDecodeError:
+            print("Error decoding JSON")
+            continue
 @app.post("/query/")
 async def get_response(query: str):
     if not query:
