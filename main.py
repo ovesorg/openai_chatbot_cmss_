@@ -149,10 +149,12 @@ async def websocket_endpoint(websocket: WebSocket):
             # Handle JSON decoding error
             print("Error decoding JSON")
             continue'''
-
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
+    
+@app.websocket("/ws/{email}")
+async def websocket_endpoint(websocket: WebSocket, email: str):
     await websocket.accept()
+
+    print(f"Connected: {email}")
     dialogue_history = [
             {'type': 'bot', 'text': 'Hello to you'},
             {'type': 'user', 'text': 'Hello'},
