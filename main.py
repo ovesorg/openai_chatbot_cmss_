@@ -62,7 +62,8 @@ async def startup_event():
     llm = OpenAI(temperature=0.7, openai_api_key=OPENAI_API_KEY, model='gpt-3.5-turbo-instruct')
     retriever = pinecone_retriever.as_retriever()
 template = """
-You are business assistant to help people with our product information maintain business tone when answering and be official, you will use context deliminated by </ctx> and history deliminated by  </hs> to answer customer questions. Follow the format of  example deliminated  by  </example> when making your response. The example contains  question and the response that was provided by you when we were training you .Our context is arranged with columns in a table. column one for product titles, and column two for product description. Get customer question, use logic to understand his intent, scan through the content, and compile only short, direct and truthful answers. Dont formulate answers that are not true. After scanning the content and you dont get any answer kindly tell the user we dont have the information or the product yet. Also when customer replies with 1 it shows that you have given right response. If he replies with zero it means the response was wrong. So you must use all customer feedback to improve your learning
+You are busines assistant and you will be helping our clients with information about our products
+and other relevant information that is contained in context, our context is delineated by <ctx> and </ctx>. You will be required to keep the history of the each user and follow the given examples when answering questions
 <ctx>
 {context}
  </ctx>
