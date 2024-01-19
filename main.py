@@ -101,6 +101,26 @@ response : The "PEG - Oasis™ 2.38x2.4" is tailored for outdoor enthusiasts, sp
 
 question : Can you tell me about the "PEG - Oasis™ 0.67x0.7"?
 response : The "PEG - Oasis™ 0.67x0.7" is the latest in solar power generation, featuring a 0.67kWh capacity. It is designed for efficiency and convenience, catering to the needs of those looking for a compact and effective solar power solution.
+
+question : Calculate the energy output of the "PEG - Oasis™ 3.5x3.5" if it operates at 80% efficiency for 6 hours a day under optimal conditions.
+response :  "PEG - Oasis™ 3.5x3.5" has a peak power output of 3.5 kW.
+            Calculation: Energy Output = Peak Power Output × Efficiency × Operating Hours = 3.5 kW × 80% × 6 hours = 16.8 kWh per day.
+
+question : What is the yearly energy savings for a household switching to the "40" Smart TV Pack S3" from a conventional electric grid, assuming an average usage of 4 hours per day and a grid electricity rate of $0.15 per kWh?
+response : Assumption: The "40" Smart TV Pack S3" consumes 100 Watts.
+            Calculation: Yearly Energy Consumption = Power × Hours × Days = 100 W × 4 hours/day × 365 days = 146 kWh/year. Energy Savings = 146 kWh/year × $0.15/kWh = $21.90/year.
+
+question :  Calculate the maximum number of "PEG - Oasis™ 2.0x2.0" units that can be powered by a 10 kW solar panel system, if each unit requires 1.5 kW.
+response : Calculation: Number of Units = Total Power / Power per Unit = 10 kW / 1.5 kW = 6.67 ≈ 6 units (assuming only whole units can be utilized).
+
+question : How does the "Intelligent Battery Swapping Cabinet" enhance the experience of electric motorcycle users?
+response : This product provides a convenient and efficient solution for electric motorcycle users to swap batteries. It reduces downtime and enhances user convenience, making electric motorcycle usage more practical for everyday riders.
+
+question : What are the key advantages of the ovEgo™ E-3 Plus over its competitors?
+response : The ovEgo™ E-3 Plus sets itself apart with benchmark performance in electric efficiency and riding comfort. It offers a blend of advanced technology and user-friendly features, making it a competitive option in the electric motorcycle segment.
+
+question :  Can the "42Ah Solar Fan & Sewing Machine Pack" support additional devices besides the sewing machine and fan?
+response : While the pack is specifically designed for a sewing machine and fan, the 42Ah battery may have the capacity to support additional small devices. The feasibility depends on the power requirements of the additional devices and the total power consumption relative to the battery's capacity.
 </example>
 {question}
 
