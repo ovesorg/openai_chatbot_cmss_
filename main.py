@@ -131,7 +131,6 @@ async def websocket_endpoint(websocket: WebSocket, email: str):
 
         # Store the WebSocket object in the connected_clients dictionary
         connected_clients[email] = websocket
-
         while True:
             data = await websocket.receive_text()
             try:
@@ -238,28 +237,7 @@ async def websocket_endpoint(websocket: WebSocket, email: str):
     except WebSocketDisconnect as e:
         print(f"WebSocket disconnected with code {e.code}: {e.reason}")
         # Perform any necessary cleanup or logging here'''
-
-    '''while True:
-        data = await websocket.receive_text()
-        print(data)
-        try:
-            json_data = json.loads(data)
-            if "input" in json_data:
-                print("This is a user query")
-                try:
-                    response = qa.run(json_data["input"])
-                    await websocket.send_text(response)
-                except Exception as e:
-                    print(f"Error processing query: {str(e)}")
-                    continue
-            elif "user_query" in json_data:
-                save_feedback_to_sheets(data)
-                print("This is a feedback message", flush=True)
-            else:
-                print("Unknown data format")
-        except json.JSONDecodeError:
-            print("Error decoding JSON")
-            continue'''
+           
 @app.post("/query/")
 async def get_response(query: str):
     if not query:
