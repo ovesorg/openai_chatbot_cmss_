@@ -154,7 +154,7 @@ async def websocket_endpoint(websocket: WebSocket):
 async def websocket_endpoint(websocket: WebSocket, email: str):
     try:
         await websocket.accept()
-        print(f"Connected: {email}")
+        print(f"Connected: {email}",flush=True)
 
         dialogue_history = [
                 {'type': 'bot', 'text': 'Hello to you'},
