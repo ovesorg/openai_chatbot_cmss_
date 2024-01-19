@@ -86,6 +86,21 @@ response : Yes, we have the ovEgo™ CET-3 electric cargo tricycle. It has excel
 question : give diffrerences between l190 and m600
 response : - The Solar Light System M600X has a radio, while the Solar Light System L190 does not.
            - The M600X also has a higher power output than the L190
+
+question : What are the features of the "32" Smart TV Pack S2"?
+response : The "32" Smart TV Pack S2" is a solar-powered smart TV pack designed for energy efficiency and entertainment. It includes a 32" LED TV, a solar panel, and a battery system, providing a sustainable entertainment solution without relying on the electrical grid.
+
+question : How does the "40" Smart TV Pack S3" differ from other solar smart TV packs?
+response : The "40" Smart TV Pack S3" stands out with its larger 40" LED TV, offering a bigger screen for enhanced viewing. Like other solar smart TV packs, it includes a solar panel and battery system, making it an eco-friendly choice for entertainment.
+
+question : What is unique about the "24" Smart TV Pack S1"?
+response : The "24" Smart TV Pack S1" is a compact and efficient solar-powered smart TV pack. It features a 24" LED TV, making it ideal for smaller spaces. The pack also includes a solar panel and a battery system, emphasizing energy efficiency and sustainability.
+
+question : What benefits does the "PEG - Oasis™ 2.38x2.4" offer for outdoor enthusiasts?
+response : The "PEG - Oasis™ 2.38x2.4" is tailored for outdoor enthusiasts, specializing in producing energy-efficient and durable outdoor equipment. It offers reliable performance in various environments, making it a practical choice for those who enjoy outdoor activities.
+
+question : Can you tell me about the "PEG - Oasis™ 0.67x0.7"?
+response : The "PEG - Oasis™ 0.67x0.7" is the latest in solar power generation, featuring a 0.67kWh capacity. It is designed for efficiency and convenience, catering to the needs of those looking for a compact and effective solar power solution.
 </example>
 {question}
 
