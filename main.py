@@ -120,6 +120,49 @@ qa = RetrievalQA.from_chain_type(
     }
 )
 
+# A dictionary to keep track of connected clients
+connected_clients = {}
+
+@app.websocket("/ws/{email}")
+async def websocket_endpoint(websocket: WebSocket, email: str):
+    try:
+        await websocket.accept()
+        print(f"Connected: {email}", flush=True)
+
+        # Store the WebSocket object in the connected_clients dictionary
+        connected_clients[email] = websocket
+
+        while True:
+            data = await websocket.receive_text()
+            try:
+                json_data = json.loads(data)
+                if "input" in json_data:
+                    # This is a user query
+                    print("This is user query")
+                    try:
+                        response = qa.run(json_data["input"])
+                        await websocket.send_text(response)
+                    except Exception as e:
+                        # Handle the exception (e.g., log it)
+                        print(f"Error: {str(e)}")
+                        # Continue the loop to keep the connection alive
+                        continue
+                elif "user_query" in json_data:
+                    save_feedback_to_sheets(data)
+                    print("This is feedback message", flush=True)
+                else:
+                    # Unexpected data format
+                    print("Unknown data format")
+            except json.JSONDecodeError:
+                # Handle JSON decoding error
+                print("Error decoding JSON")
+                continue
+    except WebSocketDisconnect as e:
+        print(f"WebSocket disconnected with code {e.code}: {e.reason}")
+
+        # Remove the WebSocket object from the connected_clients dictionary
+        if email in connected_clients:
+            del connected_clients[email]
 '''@app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
@@ -148,7 +191,7 @@ async def websocket_endpoint(websocket: WebSocket):
         except json.JSONDecodeError:
             # Handle JSON decoding error
             print("Error decoding JSON")
-            continue'''
+            continue
 
 @app.websocket("/ws/{email}")
 async def websocket_endpoint(websocket: WebSocket, email: str):
@@ -194,7 +237,7 @@ async def websocket_endpoint(websocket: WebSocket, email: str):
                 continue
     except WebSocketDisconnect as e:
         print(f"WebSocket disconnected with code {e.code}: {e.reason}")
-        # Perform any necessary cleanup or logging here
+        # Perform any necessary cleanup or logging here'''
 
     '''while True:
         data = await websocket.receive_text()
