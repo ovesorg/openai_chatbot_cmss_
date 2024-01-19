@@ -149,48 +149,53 @@ async def websocket_endpoint(websocket: WebSocket):
             # Handle JSON decoding error
             print("Error decoding JSON")
             continue'''
-    
+
 @app.websocket("/ws/{email}")
 async def websocket_endpoint(websocket: WebSocket, email: str):
-    await websocket.accept()
+    try:
+        await websocket.accept()
+        print(f"Connected: {email}")
 
-    print(f"Connected: {email}")
-    dialogue_history = [
-            {'type': 'bot', 'text': 'Hello to you'},
-            {'type': 'user', 'text': 'Hello'},
-            {'type': 'bot', 'text': 'yes we have'},
-            {'type': 'user', 'text': 'I want tv'},
-            {'type': 'bot', 'text': 'Yes we have l190'},
-            {'type': 'user', 'text': 'I need l190'}
-        ]
-    dialogue_history_string = json.dumps(dialogue_history)
-    await websocket.send_text(dialogue_history_string)
+        dialogue_history = [
+                {'type': 'bot', 'text': 'Hello to you'},
+                {'type': 'user', 'text': 'Hello'},
+                {'type': 'bot', 'text': 'yes we have'},
+                {'type': 'user', 'text': 'I want tv'},
+                {'type': 'bot', 'text': 'Yes we have l190'},
+                {'type': 'user', 'text': 'I need l190'}
+            ]
+        dialogue_history_string = json.dumps(dialogue_history)
+        await websocket.send_text(dialogue_history_string)
 
-    while True:
-        data = await websocket.receive_text()
-        try:
-            json_data = json.loads(data)
-            if "input" in json_data:
-                # This is a user query
-                print("This is user query")
-                try:
-                    response = qa.run(json_data["input"])
-                    await websocket.send_text(response)
-                except Exception as e:
-                    # Handle the exception (e.g., log it)
-                    print(f"Error: {str(e)}")
-                    # Continue the loop to keep the connection alive
-                    continue
-            elif "user_query" in json_data:
-                save_feedback_to_sheets(data)
-                print("This is feedback message", flush=True)
-            else:
-                # Unexpected data format
-                print("Unknown data format")
-        except json.JSONDecodeError:
-            # Handle JSON decoding error
-            print("Error decoding JSON")
-            continue
+        while True:
+            data = await websocket.receive_text()
+            try:
+                json_data = json.loads(data)
+                if "input" in json_data:
+                    # This is a user query
+                    print("This is user query")
+                    try:
+                        response = qa.run(json_data["input"])
+                        await websocket.send_text(response)
+                    except Exception as e:
+                        # Handle the exception (e.g., log it)
+                        print(f"Error: {str(e)}")
+                        # Continue the loop to keep the connection alive
+                        continue
+                elif "user_query" in json_data:
+                    save_feedback_to_sheets(data)
+                    print("This is feedback message", flush=True)
+                else:
+                    # Unexpected data format
+                    print("Unknown data format")
+            except json.JSONDecodeError:
+                # Handle JSON decoding error
+                print("Error decoding JSON")
+                continue
+    except WebSocketDisconnect as e:
+        print(f"WebSocket disconnected with code {e.code}: {e.reason}")
+        # Perform any necessary cleanup or logging here
+
     '''while True:
         data = await websocket.receive_text()
         print(data)
