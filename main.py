@@ -105,7 +105,7 @@ prompt = PromptTemplate(
     template=template,
     max_tokens=2000
 )
-qa = RetrievalQA.from_chain_type(
+'''qa = RetrievalQA.from_chain_type(
     llm=llm,
     chain_type='stuff',
     retriever=retriever,
@@ -117,6 +117,20 @@ qa = RetrievalQA.from_chain_type(
             memory_key="history",
             llm=llm
             input_key="question"),
+    }
+)'''
+qa = RetrievalQA.from_chain_type(
+    llm=llm,
+    chain_type='stuff',
+    retriever=retriever,
+    verbose=0,
+    chain_type_kwargs={
+        "verbose": False,
+        "prompt": prompt,
+        "memory": ConversationSummaryBufferMemory(
+            memory_key="history",
+            input_key="question",
+            llm=llm,max_token_limit=200),
     }
 )
 
