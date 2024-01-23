@@ -115,6 +115,7 @@ qa = RetrievalQA.from_chain_type(
         "prompt": prompt,
         "memory": ConversationSummaryBufferMemory(
             memory_key="history",
+            llm=llm
             input_key="question"),
     }
 )
