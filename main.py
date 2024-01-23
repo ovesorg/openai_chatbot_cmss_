@@ -85,6 +85,76 @@ response : Yes, we have the ovEgo™ CET-3 electric cargo tricycle. It has excel
 question : give diffrerences between l190 and m600
 response : - The Solar Light System M600X has a radio, while the Solar Light System L190 does not.
            - The M600X also has a higher power output than the L190
+
+question : I need a smart solar tv.
+response : We have a 40" Smart TV Pack S3, 32" Smart TV Pack S2, and 24" Smart TV Pack S1.All of these products are PAYG available, come with a warranty.
+
+question : I am looking for tricycles
+response : Yes, we have the ovEgo™ CET-3 electric cargo tricycle. It has excellent acceleration, a rated speed of 40 km/h, high load carrying capability, steep climbing capability, and a center-mount DC brushless motor.
+
+question : give diffrerences between l190 and m600
+response : - The Solar Light System M600X has a radio, while the Solar Light System L190 does not.
+           - The M600X also has a higher power output than the L190
+
+question : What are the features of the "32" Smart TV Pack S2"?
+response : The "32" Smart TV Pack S2" is a solar-powered smart TV pack designed for energy efficiency and entertainment. It includes a 32" LED TV, a solar panel, and a battery system, providing a sustainable entertainment solution without relying on the electrical grid.
+
+question : How does the "40" Smart TV Pack S3" differ from other solar smart TV packs?
+response : The "40" Smart TV Pack S3" stands out with its larger 40" LED TV, offering a bigger screen for enhanced viewing. Like other solar smart TV packs, it includes a solar panel and battery system, making it an eco-friendly choice for entertainment.
+
+question : What is unique about the "24" Smart TV Pack S1"?
+response : The "24" Smart TV Pack S1" is a compact and efficient solar-powered smart TV pack. It features a 24" LED TV, making it ideal for smaller spaces. The pack also includes a solar panel and a battery system, emphasizing energy efficiency and sustainability.
+
+question : What benefits does the "PEG - Oasis™ 2.38x2.4" offer for outdoor enthusiasts?
+response : The "PEG - Oasis™ 2.38x2.4" is tailored for outdoor enthusiasts, specializing in producing energy-efficient and durable outdoor equipment. It offers reliable performance in various environments, making it a practical choice for those who enjoy outdoor activities.
+
+question : Can you tell me about the "PEG - Oasis™ 0.67x0.7"?
+response : The "PEG - Oasis™ 0.67x0.7" is the latest in solar power generation, featuring a 0.67kWh capacity. It is designed for efficiency and convenience, catering to the needs of those looking for a compact and effective solar power solution.
+
+question : Calculate the energy output of the "PEG - Oasis™ 3.5x3.5" if it operates at 80% efficiency for 6 hours a day under optimal conditions.
+response :  "PEG - Oasis™ 3.5x3.5" has a peak power output of 3.5 kW.
+            Calculation: Energy Output = Peak Power Output × Efficiency × Operating Hours = 3.5 kW × 80% × 6 hours = 16.8 kWh per day.
+
+question : What is the yearly energy savings for a household switching to the "40" Smart TV Pack S3" from a conventional electric grid, assuming an average usage of 4 hours per day and a grid electricity rate of $0.15 per kWh?
+response : Assumption: The "40" Smart TV Pack S3" consumes 100 Watts.
+            Calculation: Yearly Energy Consumption = Power × Hours × Days = 100 W × 4 hours/day × 365 days = 146 kWh/year. Energy Savings = 146 kWh/year × $0.15/kWh = $21.90/year.
+
+question :  Calculate the maximum number of "PEG - Oasis™ 2.0x2.0" units that can be powered by a 10 kW solar panel system, if each unit requires 1.5 kW.
+response : Calculation: Number of Units = Total Power / Power per Unit = 10 kW / 1.5 kW = 6.67 ≈ 6 units (assuming only whole units can be utilized).
+
+question : How does the "Intelligent Battery Swapping Cabinet" enhance the experience of electric motorcycle users?
+response : This product provides a convenient and efficient solution for electric motorcycle users to swap batteries. It reduces downtime and enhances user convenience, making electric motorcycle usage more practical for everyday riders.
+
+question : What are the key advantages of the ovEgo™ E-3 Plus over its competitors?
+response : The ovEgo™ E-3 Plus sets itself apart with benchmark performance in electric efficiency and riding comfort. It offers a blend of advanced technology and user-friendly features, making it a competitive option in the electric motorcycle segment.
+
+question :  Can the "42Ah Solar Fan & Sewing Machine Pack" support additional devices besides the sewing machine and fan?
+response : While the pack is specifically designed for a sewing machine and fan, the 42Ah battery may have the capacity to support additional small devices. The feasibility depends on the power requirements of the additional devices and the total power consumption relative to the battery's capacity.
+
+question : which products can i use for production and business purpose?
+response : To recommend products from your provided data for production and business purposes, it's crucial to consider the nature of your business, its location, energy requirements, and specific operational needs. Based on the products in the data, here are some suggestions:
+
+            Solar Sewing Machine Packs (e.g., 42Ah Solar Fan & Sewing Machine Pack, 18Ah Solar Sewing Machine Pack):
+
+            Suitable For: Tailoring businesses, especially in areas with limited access to electricity. They offer a sustainable and cost-effective solution for garment production.
+            Advantages: These packs allow for continuous operation during power outages and reduce electricity costs. The inclusion of a fan also improves working conditions in hot climates.
+            Solar Smart TV Packs (e.g., 32" Smart TV Pack S2, 40" Smart TV Pack S3):
+            
+            Suitable For: Businesses in hospitality, such as hotels, cafes, and waiting areas where entertainment for customers is beneficial. They're also ideal for remote educational settings where a TV can be used as a learning tool.
+            Advantages: These TVs provide entertainment without reliance on the electrical grid, reducing operational costs and enhancing customer experience in off-grid locations.
+            Solar Power Generators (e.g., PEG - Oasis™ 0.67x0.7):
+            
+            Suitable For: A wide range of businesses that require backup power solutions, such as small offices, shops, and outdoor event organizers.
+            Advantages: They offer a reliable power source for essential equipment during power outages, and their portable nature makes them useful for outdoor events or remote operations.
+            Electric Motorcycles (e.g., ovEgo™ models):
+            
+            Suitable For: Delivery services, courier companies, or businesses requiring short-range transportation.
+            Advantages: These vehicles are cost-effective for frequent, short trips, especially in urban areas. They reduce fuel costs and contribute to a lower carbon footprint.
+            Intelligent Battery Swapping Cabinet:
+            
+            Suitable For: Businesses that use a fleet of electric vehicles or devices.
+            Advantages: This system facilitates quick battery swaps, reducing downtime for vehicles or equipment that rely on battery power.
+            Each of these products offers unique benefits and can be instrumental in different types of businesses, particularly those focusing on sustainability and energy efficiency. The best choice depends on your specific business needs, operational environment, and sustainability goals.
 </example>
 {question}
 
