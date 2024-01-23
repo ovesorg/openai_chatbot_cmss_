@@ -113,7 +113,7 @@ qa = RetrievalQA.from_chain_type(
     chain_type_kwargs={
         "verbose": False,
         "prompt": prompt,
-        "memory": ConversationBufferMemory(
+        "memory": ConversationSummaryMemory(
             memory_key="history",
             input_key="question"),
     }
