@@ -59,13 +59,10 @@ async def startup_event():
     # )], weights=[1, 0])
     # db = Chroma.from_documents([global_context], embeddings)
     # llm = OpenAI(temperature=0.8, openai_api_key=OPENAI_API_KEY)
-    llm = OpenAI(temperature=0.7, openai_api_key=OPENAI_API_KEY, model='gpt-3.5-turbo-instruct')
+    llm = OpenAI(temperature=0.3, openai_api_key=OPENAI_API_KEY, model='gpt-3.5-turbo-instruct')
     retriever = pinecone_retriever.as_retriever()
 template = """
-You are busines assistant and you will be helping our clients with information about our products
-and other relevant information that is contained in context, our context is delineated by <ctx> and </ctx>. You will be required to keep the history of the each user and follow the given examples when answering questions.
-Strictly use our context as source of truth and not anything outside it. 
-<ctx>
+You are here to answer questions about our products. Your name is Ovsmart and you will only answer questions about the products that we have in our context, our context is deliminated by <ctx> and </ctx>, and history is deliminated by <hs> and </hs>. Make short, relevant, concise and precise answers only based in our context. If anyone asks a question outside our context, kindly reply we are not able to give you the information you are asking right now.
 {context}
  </ctx>
 ------
@@ -83,21 +80,8 @@ response : We have a 40" Smart TV Pack S3, 32" Smart TV Pack S2, and 24" Smart T
 question : I am looking for tricycles
 response : Yes, we have the ovEgo™ CET-3 electric cargo tricycle. It has excellent acceleration, a rated speed of 40 km/h, high load carrying capability, steep climbing capability, and a center-mount DC brushless motor.
 
-question : give diffrerences between l190 and m600
-response : - The Solar Light System M600X has a radio, while the Solar Light System L190 does not.
-           - The M600X also has a higher power output than the L190
-
-question : What are the features of the "32" Smart TV Pack S2"?
-response : The "32" Smart TV Pack S2" is a solar-powered smart TV pack designed for energy efficiency and entertainment. It includes a 32" LED TV, a solar panel, and a battery system, providing a sustainable entertainment solution without relying on the electrical grid.
-
-question : How does the "40" Smart TV Pack S3" differ from other solar smart TV packs?
-response : The "40" Smart TV Pack S3" stands out with its larger 40" LED TV, offering a bigger screen for enhanced viewing. Like other solar smart TV packs, it includes a solar panel and battery system, making it an eco-friendly choice for entertainment.
-
 question : What is unique about the "24" Smart TV Pack S1"?
 response : The "24" Smart TV Pack S1" is a compact and efficient solar-powered smart TV pack. It features a 24" LED TV, making it ideal for smaller spaces. The pack also includes a solar panel and a battery system, emphasizing energy efficiency and sustainability.
-
-question : What benefits does the "PEG - Oasis™ 2.38x2.4" offer for outdoor enthusiasts?
-response : The "PEG - Oasis™ 2.38x2.4" is tailored for outdoor enthusiasts, specializing in producing energy-efficient and durable outdoor equipment. It offers reliable performance in various environments, making it a practical choice for those who enjoy outdoor activities.
 
 question : Can you tell me about the "PEG - Oasis™ 0.67x0.7"?
 response : The "PEG - Oasis™ 0.67x0.7" is the latest in solar power generation, featuring a 0.67kWh capacity. It is designed for efficiency and convenience, catering to the needs of those looking for a compact and effective solar power solution.
@@ -113,12 +97,6 @@ response : Assumption: The "40" Smart TV Pack S3" consumes 100 Watts.
 question :  Calculate the maximum number of "PEG - Oasis™ 2.0x2.0" units that can be powered by a 10 kW solar panel system, if each unit requires 1.5 kW.
 response : Calculation: Number of Units = Total Power / Power per Unit = 10 kW / 1.5 kW = 6.67 ≈ 6 units (assuming only whole units can be utilized).
 
-question : How does the "Intelligent Battery Swapping Cabinet" enhance the experience of electric motorcycle users?
-response : This product provides a convenient and efficient solution for electric motorcycle users to swap batteries. It reduces downtime and enhances user convenience, making electric motorcycle usage more practical for everyday riders.
-
-question : What are the key advantages of the ovEgo™ E-3 Plus over its competitors?
-response : The ovEgo™ E-3 Plus sets itself apart with benchmark performance in electric efficiency and riding comfort. It offers a blend of advanced technology and user-friendly features, making it a competitive option in the electric motorcycle segment.
-efficiency. The best choice depends on your specific business needs, operational environment, and sustainability goals.
 </example>
 {question}
 
@@ -132,7 +110,7 @@ pinecone.init(
 )
 index_name = "chatbot"
 docsearch = Pinecone.from_existing_index(index_name, embeddings)
-llm = OpenAI(temperature=0.7, openai_api_key=OPENAI_API_KEY, model='gpt-3.5-turbo-instruct')
+llm = OpenAI(temperature=0.3, openai_api_key=OPENAI_API_KEY, model='gpt-3.5-turbo-instruct')
 retriever = docsearch.as_retriever()
 prompt = PromptTemplate(
     input_variables=["history", "context", "question"],
