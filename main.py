@@ -61,8 +61,9 @@ async def startup_event():
     # llm = OpenAI(temperature=0.8, openai_api_key=OPENAI_API_KEY)
     llm = OpenAI(temperature=0.3, openai_api_key=OPENAI_API_KEY, model='gpt-3.5-turbo-instruct')
     retriever = pinecone_retriever.as_retriever()
+
 template = """
-You are here to answer questions about our products. Your name is Ovsmart and you will only answer questions about the products that we have in our context, our context is deliminated by <ctx> and </ctx>, and history is deliminated by <hs> and </hs>. Make short, relevant, concise and precise answers only based in our context. If anyone asks a question outside our context, kindly reply we are not able to give you the information you are asking right now.
+You are business assistant to help people with our product information maintain business tone when answering and be official, you will use context deliminated by </ctx> and history deliminated by  </hs> to answer customer questions. Follow the format of  example deliminated  by  </example> when making your response. The example contains  question and the response that was provided by you when we were training you .Our context is arranged with columns in a table. column one for product titles, and column two for product description. Get customer question, use logic to understand his intent, scan through the content, and compile only short, direct,concise, precise and truthful answers. Dont formulate answers that are not true. After scanning the content and you dont get any answer kindly tell the user we dont have the information or the product yet.
 {context}
  </ctx>
 ------
@@ -80,23 +81,9 @@ response : We have a 40" Smart TV Pack S3, 32" Smart TV Pack S2, and 24" Smart T
 question : I am looking for tricycles
 response : Yes, we have the ovEgo™ CET-3 electric cargo tricycle. It has excellent acceleration, a rated speed of 40 km/h, high load carrying capability, steep climbing capability, and a center-mount DC brushless motor.
 
-question : What is unique about the "24" Smart TV Pack S1"?
-response : The "24" Smart TV Pack S1" is a compact and efficient solar-powered smart TV pack. It features a 24" LED TV, making it ideal for smaller spaces. The pack also includes a solar panel and a battery system, emphasizing energy efficiency and sustainability.
-
-question : Can you tell me about the "PEG - Oasis™ 0.67x0.7"?
-response : The "PEG - Oasis™ 0.67x0.7" is the latest in solar power generation, featuring a 0.67kWh capacity. It is designed for efficiency and convenience, catering to the needs of those looking for a compact and effective solar power solution.
-
-question : Calculate the energy output of the "PEG - Oasis™ 3.5x3.5" if it operates at 80% efficiency for 6 hours a day under optimal conditions.
-response :  "PEG - Oasis™ 3.5x3.5" has a peak power output of 3.5 kW.
-            Calculation: Energy Output = Peak Power Output × Efficiency × Operating Hours = 3.5 kW × 80% × 6 hours = 16.8 kWh per day.
-
-question : What is the yearly energy savings for a household switching to the "40" Smart TV Pack S3" from a conventional electric grid, assuming an average usage of 4 hours per day and a grid electricity rate of $0.15 per kWh?
-response : Assumption: The "40" Smart TV Pack S3" consumes 100 Watts.
-            Calculation: Yearly Energy Consumption = Power × Hours × Days = 100 W × 4 hours/day × 365 days = 146 kWh/year. Energy Savings = 146 kWh/year × $0.15/kWh = $21.90/year.
-
-question :  Calculate the maximum number of "PEG - Oasis™ 2.0x2.0" units that can be powered by a 10 kW solar panel system, if each unit requires 1.5 kW.
-response : Calculation: Number of Units = Total Power / Power per Unit = 10 kW / 1.5 kW = 6.67 ≈ 6 units (assuming only whole units can be utilized).
-
+question : give diffrerences between l190 and m600
+response : - The Solar Light System M600X has a radio, while the Solar Light System L190 does not.
+           - The M600X also has a higher power output than the L190
 </example>
 {question}
 
