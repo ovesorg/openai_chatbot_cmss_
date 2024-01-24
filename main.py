@@ -228,17 +228,21 @@ async def websocket_endpoint(websocket: WebSocket, email: str):
                     # This is a user query
                     print("This is user query")
                     try:
-                        emails = json_data["email"]
-                        response = qa.run(json_data["input"])
-                        #if "emails" in clients:
-                        await clients["emails"].send_text(f"{response} response send to {emails}")
-                        
-                            #await websocket.send_text(response)
+                        if "email" in json_data:
+                            email = json_data["email"]
+                            if email in clients:
+                                response = qa.run(json_data["input"])
+                                await clients[email].send_text(f"{response} response send to {email}")
+                            else:
+                                print(f"Email {email} not found in clients dictionary")
+                        else:
+                            print("Email not provided in the JSON data")
                     except Exception as e:
                         # Handle the exception (e.g., log it)
                         print(f"Error: {str(e)}")
                         # Continue the loop to keep the connection alive
                         continue
+
                 elif "user_query" in json_data:
                     save_feedback_to_sheets(data)
                     print("This is feedback message", flush=True)
