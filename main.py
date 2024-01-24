@@ -5,6 +5,7 @@ from langchain.chains import RetrievalQA
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.memory import ConversationBufferMemory
 from langchain.memory import ConversationSummaryBufferMemory
+from langchain.chains.conversation.memory import ConversationBufferWindowMemory
 from langchain import PromptTemplate
 from langchain.chains import ConversationChain
 from fastapi import FastAPI,Request, WebSocket, Form,Depends, HTTPException, WebSocketDisconnect
@@ -185,7 +186,8 @@ prompt = PromptTemplate(
     chain_type_kwargs={
         "verbose": False,
         "prompt": prompt,
-        "memory": ConversationSummaryBufferMemory(
+        "memory": ConversationBufferWindowMemory(
+            k=1,
             memory_key="history",
             llm=llm
             input_key="question"),
