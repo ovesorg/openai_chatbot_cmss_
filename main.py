@@ -205,16 +205,19 @@ qa = RetrievalQA.from_chain_type(
 )
 
 # A dictionary to keep track of connected clients
-connected_clients = {}
+clients = {}
 
 @app.websocket("/ws/{email}")
 async def websocket_endpoint(websocket: WebSocket, email: str):
+    if email in clients:
+        await websocket.close(code=4000, reason="email already in use")
+        return
     try:
         await websocket.accept()
         print(f"Connected: {email}", flush=True)
 
-        # Store the WebSocket object in the connected_clients dictionary
-        connected_clients[email] = websocket
+        # Store the WebSocket object in the clients dictionary
+        clients[email] = websocket
         while True:
             data = await websocket.receive_text()
             try:
@@ -223,8 +226,12 @@ async def websocket_endpoint(websocket: WebSocket, email: str):
                     # This is a user query
                     print("This is user query")
                     try:
+                        emails = json_data["email"]
                         response = qa.run(json_data["input"])
-                        await websocket.send_text(response)
+                        if "emails" in clients:
+                            await clients["emails"].send_text(f"{response} response send to {emails}")
+                        
+                            #await websocket.send_text(response)
                     except Exception as e:
                         # Handle the exception (e.g., log it)
                         print(f"Error: {str(e)}")
@@ -243,9 +250,9 @@ async def websocket_endpoint(websocket: WebSocket, email: str):
     except WebSocketDisconnect as e:
         print(f"WebSocket disconnected with code {e.code}: {e.reason}")
 
-        # Remove the WebSocket object from the connected_clients dictionary
-        if email in connected_clients:
-            del connected_clients[email]
+        # Remove the WebSocket object from the clients dictionary
+        if email in clients:
+            del clients[email]
 '''@app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
