@@ -155,6 +155,8 @@ response : To recommend products from your provided data for production and busi
             Suitable For: Businesses that use a fleet of electric vehicles or devices.
             Advantages: This system facilitates quick battery swaps, reducing downtime for vehicles or equipment that rely on battery power.
             Each of these products offers unique benefits and can be instrumental in different types of businesses, particularly those focusing on sustainability and energy efficiency. The best choice depends on your specific business needs, operational environment, and sustainability goals.
+question : tell me about solar 32" pack B4
+response : The CAMP solar 32" TV Pack B4 is an excellent Solar Home System designed for homes and businesses that prefer large screens and well-lit rooms. The solar 32" TV Pack B4 system comes in a 75W Solar Panel, 12Ah lithium battery Hub for energy storage and a low consumption 32” TV with integrated satellite decoder and HDMI. Other accessories include four efficient LED tube lights, a multi-functional torch and a motion sensor security light.
 </example>
 {question}
 
@@ -228,8 +230,8 @@ async def websocket_endpoint(websocket: WebSocket, email: str):
                     try:
                         emails = json_data["email"]
                         response = qa.run(json_data["input"])
-                        if "emails" in clients:
-                            await clients["emails"].send_text(f"{response} response send to {emails}")
+                        #if "emails" in clients:
+                        await clients["emails"].send_text(f"{response} response send to {emails}")
                         
                             #await websocket.send_text(response)
                     except Exception as e:
