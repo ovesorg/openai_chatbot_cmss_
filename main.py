@@ -209,7 +209,7 @@ qa = RetrievalQA.from_chain_type(
 )
 
 # A dictionary to keep track of connected clients
-clients = {}
+'''clients = {}
 
 @app.websocket("/ws/{email}")
 async def websocket_endpoint(websocket: WebSocket, email: str):
@@ -260,7 +260,7 @@ async def websocket_endpoint(websocket: WebSocket, email: str):
 
         # Remove the WebSocket object from the clients dictionary
         if email in clients:
-            del clients[email]
+            del clients[email]'''
 '''@app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
@@ -289,7 +289,7 @@ async def websocket_endpoint(websocket: WebSocket):
         except json.JSONDecodeError:
             # Handle JSON decoding error
             print("Error decoding JSON")
-            continue
+            continue'''
 
 @app.websocket("/ws/{email}")
 async def websocket_endpoint(websocket: WebSocket, email: str):
@@ -335,7 +335,7 @@ async def websocket_endpoint(websocket: WebSocket, email: str):
                 continue
     except WebSocketDisconnect as e:
         print(f"WebSocket disconnected with code {e.code}: {e.reason}")
-        # Perform any necessary cleanup or logging here'''
+        # Perform any necessary cleanup or logging here
            
 @app.post("/query/")
 async def get_response(query: str):
