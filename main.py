@@ -188,7 +188,7 @@ qa = RetrievalQA.from_chain_type(
         "verbose": False,
         "prompt": prompt,
         "memory": ConversationBufferWindowMemory(
-            k=1,
+            k=0,
             memory_key="history",
             llm=llm,
             input_key="question"),
