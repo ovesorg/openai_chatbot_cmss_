@@ -190,7 +190,7 @@ qa = RetrievalQA.from_chain_type(
         "memory": ConversationBufferWindowMemory(
             k=1,
             memory_key="history",
-            llm=llm
+            llm=llm,
             input_key="question"),
     }
 )
