@@ -179,7 +179,7 @@ prompt = PromptTemplate(
     template=template,
     max_tokens=2000
 )
-'''qa = RetrievalQA.from_chain_type(
+qa = RetrievalQA.from_chain_type(
     llm=llm,
     chain_type='stuff',
     retriever=retriever,
@@ -193,8 +193,8 @@ prompt = PromptTemplate(
             llm=llm
             input_key="question"),
     }
-)'''
-qa = RetrievalQA.from_chain_type(
+)
+'''qa = RetrievalQA.from_chain_type(
     llm=llm,
     chain_type='stuff',
     retriever=retriever,
@@ -210,7 +210,7 @@ qa = RetrievalQA.from_chain_type(
 )
 
 # A dictionary to keep track of connected clients
-'''clients = {}
+clients = {}
 
 @app.websocket("/ws/{email}")
 async def websocket_endpoint(websocket: WebSocket, email: str):
