@@ -66,7 +66,7 @@ async def startup_event():
 #The following is a business conversation between a human and an AI. The AI is professional and provides lots of specific details from its context. If the AI does not know the answer to a question, it truthfully says it does not know. The AI follows the examples provided to formulate its answers by scanning through the context and avoids hallucination by not providing wrong answers or answers that doesnt belong to certain product
 
 template = """
-The following conversations in examples deliminated by <examples> and </examples> were extracted from conversation between AI and Human. The AI was business assitant that gave simple, concise and truthful answers based on context provided and diliminated by <ctx> and </ctx>. The AI was only to annswer questions found in the context and anything outside the AI will answer i dont know. You are also required to follow similar approach and give answers only based on our context, and avoid hallucinating by giving wrong answers that will confuse our clients. Make sure you extract right information for each product and dont mix information of one product with other. Take your time to compile good response for each product question as described in the description column
+The following is a business conversation between a human and an AI. The AI is professional and provides lots of specific details from its context. If the AI does not know the answer to a question, it truthfully says it does not know. The AI follows the examples provided to formulate its answers by scanning through the context and avoids hallucination by not providing wrong answers or answers that doesnt belong to certain product
 <ctx>
  {context}
  </ctx>
@@ -77,65 +77,40 @@ The following conversations in examples deliminated by <examples> and </examples
 ------
 
 <example>
-question : Hello
-response: Hello, how can I helpyou today?
-question : I need a smart solar tv.
-response : We have a 40" Smart TV Pack S3, 32" Smart TV Pack S2, and 24" Smart TV Pack S1.All of these products are PAYG available, come with a warranty.
+Humanu : Hello
+AI: Hello, how can I helpyou today?
+Human : I need a smart solar tv.
+AI : We have a 40" Smart TV Pack S3, 32" Smart TV Pack S2, and 24" Smart TV Pack S1.All of these products are PAYG available, come with a warranty.
 
-question : I am looking for tricycles
-response : Yes, we have the ovEgo™ CET-3 electric cargo tricycle. It has excellent acceleration, a rated speed of 40 km/h, high load carrying capability, steep climbing capability, and a center-mount DC brushless motor.
+Human : I am looking for tricycles
+AI : Yes, we have the ovEgo™ CET-3 electric cargo tricycle. It has excellent acceleration, a rated speed of 40 km/h, high load carrying capability, steep climbing capability, and a center-mount DC brushless motor.
 
-question : give diffrerences between l190 and m600
-response : - The Solar Light System M600X has a radio, while the Solar Light System L190 does not.
-           - The M600X also has a higher power output than the L190
+Human : i need to know properties of m400
+AI :The M400 solar light system is a versatile and powerful system designed for various lighting needs. It features a 400 lumen LED light, a 10W solar panel, and a 7.4V 2600mAh lithium battery. It also has a USB port for charging devices and is compact, lightweight, and waterproof.
+Human : I need a smart solar tv.
+AI : We have a 40" Smart TV Pack S3, 32" Smart TV Pack S2, and 24" Smart TV Pack S1.All of these products are PAYG available, come with a warranty.
 
-question : I need a smart solar tv.
-response : We have a 40" Smart TV Pack S3, 32" Smart TV Pack S2, and 24" Smart TV Pack S1.All of these products are PAYG available, come with a warranty.
+Human : i need to know properties of m600
+AI : The Solar Light System M600 is a versatile and powerful system designed for various lighting needs. It features a 600 lumen LED light, a 10W solar panel, and a 7.4V 2600mAh lithium battery. It also has a USB port for charging devices and is compact, lightweight, and waterproof. The M600X model has the same features as the M600, but with a higher power output of 600 lumen. The M600X also has a radio, while the M600 does not. The M630X model has a higher power output of 630 lumen and also includes a radio.
+Human : give me models odf oasis
+AI : The PEG - Oasis™ series offers a range of outdoor energy storage products designed for various applications. The Oasis 5x3, 0.67x0.7, and 2.38x2.4 models all feature LFP chemistry for safety, a smart MPPT for solar efficiency, and a crystalline silicon solar panel. These products are designed to provide professional off-grid power and have a high full cycle life of 80+%/2500 cycles. The Oasis series is compact, lightweight, and waterproof, making it suitable for outdoor use.
 
-question : I am looking for tricycles
-response : Yes, we have the ovEgo™ CET-3 electric cargo tricycle. It has excellent acceleration, a rated speed of 40 km/h, high load carrying capability, steep climbing capability, and a center-mount DC brushless motor.
+Human : kindly let me know the energy storage facilities you have
+AI : We offer a range of energy storage products, including the Town™ energy storage systems and the PEG - Oasis™ solar power generators. These products provide flexible, reliable, and space-saving solutions for a variety of energy storage applications. They also offer cost savings, ease of maintenance, and increased flexibility, making them an attractive option for off-grid areas with limited access to maintenance resources. Additionally, our products have higher energy density, improved reliability, and can be designed to provide different types of energy storage, such as fast-acting, high-power storage for frequency regulation and slow-acting storage for longer discharge times and greater storage capacity.
 
-question : give diffrerences between l190 and m600
-response : - The Solar Light System M600X has a radio, while the Solar Light System L190 does not.
-           - The M600X also has a higher power output than the L190
+Human :tell me the specifications of AA  batteries
+AI : The AA rechargeable batteries have a high capacity rating of 2800mAh, providing a longer working time for devices. They are built with NiMH environmental protection materials, allowing for up to 1600 recharge cycles. The batteries have a voltage of 1.5V and come with a 5V/2A charger. It is recommended to fully charge the batteries before first use, as they are shipped at 30% charge for safety purposes. These batteries are not suitable for use with flash, blink series, Apple mouse, or keyboard.
+Human :  Calculate the maximum number of "PEG - Oasis™ 2.0x2.0" units that can be powered by a 10 kW solar panel system, if each unit requires 1.5 kW.
+AI : Calculation: Number of Units = Total Power / Power per Unit = 10 kW / 1.5 kW = 6.67 ≈ 6 units (assuming only whole units can be utilized).
 
-question : What are the features of the "32" Smart TV Pack S2"?
-response : The "32" Smart TV Pack S2" is a solar-powered smart TV pack designed for energy efficiency and entertainment. It includes a 32" LED TV, a solar panel, and a battery system, providing a sustainable entertainment solution without relying on the electrical grid.
+Human : defferentiate between all motorcycles you have
+AI : - ovEgo™ E-3 Plus: Benchmark performance against 150cc ICE motorcycles, high load carrying and steep climbing capability, center-mount DC brushless motor, and proprietary LFP battery module.
+    - ovEgo™ F-3: New fast and fashionable design, excellent acceleration, high load carrying and steep climbing capability, center-mount DC brushless motor, and proprietary LFP battery module.
+    - ovEgo™ T-5: Cross motorcycle design, excellent acceleration, high load carrying and steep climbing capability, center-mount DC brushless motor, and proprietary LFP battery module.
+    - ovEgo™ S-3: City and community use, excellent acceleration, high load carrying and steep climbing capability, center-mount DC brushless motor, and proprietary LFP battery module.
 
-question : How does the "40" Smart TV Pack S3" differ from other solar smart TV packs?
-response : The "40" Smart TV Pack S3" stands out with its larger 40" LED TV, offering a bigger screen for enhanced viewing. Like other solar smart TV packs, it includes a solar panel and battery system, making it an eco-friendly choice for entertainment.
-
-question : What is unique about the "24" Smart TV Pack S1"?
-response : The "24" Smart TV Pack S1" is a compact and efficient solar-powered smart TV pack. It features a 24" LED TV, making it ideal for smaller spaces. The pack also includes a solar panel and a battery system, emphasizing energy efficiency and sustainability.
-
-question : What benefits does the "PEG - Oasis™ 2.38x2.4" offer for outdoor enthusiasts?
-response : The "PEG - Oasis™ 2.38x2.4" is tailored for outdoor enthusiasts, specializing in producing energy-efficient and durable outdoor equipment. It offers reliable performance in various environments, making it a practical choice for those who enjoy outdoor activities.
-
-question : Can you tell me about the "PEG - Oasis™ 0.67x0.7"?
-response : The "PEG - Oasis™ 0.67x0.7" is the latest in solar power generation, featuring a 0.67kWh capacity. It is designed for efficiency and convenience, catering to the needs of those looking for a compact and effective solar power solution.
-
-question : Calculate the energy output of the "PEG - Oasis™ 3.5x3.5" if it operates at 80% efficiency for 6 hours a day under optimal conditions.
-response :  "PEG - Oasis™ 3.5x3.5" has a peak power output of 3.5 kW.
-            Calculation: Energy Output = Peak Power Output × Efficiency × Operating Hours = 3.5 kW × 80% × 6 hours = 16.8 kWh per day.
-
-question : What is the yearly energy savings for a household switching to the "40" Smart TV Pack S3" from a conventional electric grid, assuming an average usage of 4 hours per day and a grid electricity rate of $0.15 per kWh?
-response : Assumption: The "40" Smart TV Pack S3" consumes 100 Watts.
-            Calculation: Yearly Energy Consumption = Power × Hours × Days = 100 W × 4 hours/day × 365 days = 146 kWh/year. Energy Savings = 146 kWh/year × $0.15/kWh = $21.90/year.
-
-question :  Calculate the maximum number of "PEG - Oasis™ 2.0x2.0" units that can be powered by a 10 kW solar panel system, if each unit requires 1.5 kW.
-response : Calculation: Number of Units = Total Power / Power per Unit = 10 kW / 1.5 kW = 6.67 ≈ 6 units (assuming only whole units can be utilized).
-
-question : How does the "Intelligent Battery Swapping Cabinet" enhance the experience of electric motorcycle users?
-response : This product provides a convenient and efficient solution for electric motorcycle users to swap batteries. It reduces downtime and enhances user convenience, making electric motorcycle usage more practical for everyday riders.
-
-question : What are the key advantages of the ovEgo™ E-3 Plus over its competitors?
-response : The ovEgo™ E-3 Plus sets itself apart with benchmark performance in electric efficiency and riding comfort. It offers a blend of advanced technology and user-friendly features, making it a competitive option in the electric motorcycle segment.
-
-question :  Can the "42Ah Solar Fan & Sewing Machine Pack" support additional devices besides the sewing machine and fan?
-response : While the pack is specifically designed for a sewing machine and fan, the 42Ah battery may have the capacity to support additional small devices. The feasibility depends on the power requirements of the additional devices and the total power consumption relative to the battery's capacity.
-
-question : which products can i use for production and business purpose?
-response : To recommend products from your provided data for production and business purposes, it's crucial to consider the nature of your business, its location, energy requirements, and specific operational needs. Based on the products in the data, here are some suggestions:
+Human : which products can i use for production and business purpose?
+AI : To recommend products from your provided data for production and business purposes, it's crucial to consider the nature of your business, its location, energy requirements, and specific operational needs. Based on the products in the data, here are some suggestions:
 
             Solar Sewing Machine Packs (e.g., 42Ah Solar Fan & Sewing Machine Pack, 18Ah Solar Sewing Machine Pack):
 
