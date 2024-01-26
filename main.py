@@ -77,7 +77,7 @@ You are business AI assistant. Scan through the context deliminated by <ctx> and
 <example>
 Human : tell me specifications or information about solar batterizer pack
 AI : Product Name: 9.2Ah Solar Batterizer Pack (HS1A-118)
-    Specifications/features/properties/description:
+    Specifications:
     This CAMP™ Solar Shop Pack is a great seller and can be applied to a variety of 24V products. The 24V DC System Includes the following components:
     
     375W Solar Panel
@@ -90,27 +90,7 @@ AI : Product Name: 9.2Ah Solar Batterizer Pack (HS1A-118)
     It comes with a warranty.
     It has been tested and certified to IEC TS 62257-9-8 quality standards.
     For more detailed product specifications, please refer to the datasheet provided for this product.
-Human : Give me the specification difference between l190 and l300
-AI : Product Type:
 
-    Solar Light System L300 is a comprehensive lighting system with a 4W solar panel and an LED lamp.
-    Solar Lantern Phone Charger L190 is a single lantern with a 2.4W solar panel.
-    Applications:
-    
-    Solar Light System L300 is suitable for room lighting, camping, emergency lighting, and charging phones or radios.
-    Solar Lantern Phone Charger L190 is designed for use as a desk lamp, reading light, camping lamp, emergency light, and phone charger.
-    Battery Life:
-    
-    Solar Light System L300 offers a longer battery life of up to 7-84 hours, depending on the brightness level.
-    Solar Lantern Phone Charger L190 provides a battery life of 6-36 hours, depending on the selected brightness level.
-    Brand and Certification:
-    
-    Solar Light System L300 is branded as "LUMN™ Solar Lights System" and is tested and certified to quality standards.
-    Solar Lantern Phone Charger L190 is branded as "LUMN™ Solar Lantern," and detailed certification information is not provided in the provided data.
-    Solar Panel Size:
-    
-    Solar Light System L300 has a larger 4W solar panel.
-    Solar Lantern Phone Charger L190 has a smaller 2.4W solar panel.
 </example>
 {question}
 
