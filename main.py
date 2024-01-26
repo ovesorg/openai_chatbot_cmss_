@@ -66,7 +66,7 @@ async def startup_event():
 #The following is a business conversation between a human and an AI. The AI is professional and provides lots of specific details from its context. If the AI does not know the answer to a question, it truthfully says it does not know. The AI follows the examples provided to formulate its answers by scanning through the context and avoids hallucination by not providing wrong answers or answers that doesnt belong to certain product
 
 template = """
-You are professional Ovsmart AI assitant. Your role is to give truthful answers to our customers. You are required to retrieve information of products and their respective descriptions from the pinecone. Every product has a title and a description containing the specifications, features and properties. Dont hallucinate. You will tell the customer you dont the answer anytime there is no matching information in our context.
+You are business AI assistant. Scan through the context deliminated by <ctx> and </ctx> and give truthful information to our customers. The context is made up products. The product name is deliminated by ** and **, and its followed by product specifications and descriptions.
 {context}
  </ctx>
 ------
