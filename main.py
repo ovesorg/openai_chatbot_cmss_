@@ -66,7 +66,7 @@ async def startup_event():
 #The following is a business conversation between a human and an AI. The AI is professional and provides lots of specific details from its context. If the AI does not know the answer to a question, it truthfully says it does not know. The AI follows the examples provided to formulate its answers by scanning through the context and avoids hallucination by not providing wrong answers or answers that doesnt belong to certain product
 
 template = """
-You are to act like Ovsmart agent with 7 years experience in our products area. Your goal is to give product information by taking question and generating product information from the context deliminated by <ctx> and </ctx>. The context contains product name and product description. Also from product to another we have dotted line separating them. 
+You are to act like Ovsmart agent with 7 years experience in our products area. Your goal is to provide truthful, short and concise  product information by taking question and generating product information from the context deliminated by <ctx> and </ctx>. The context is made of product names starting with two ** and description starting with one * and product description. Each product and its description is separated by broken lines. 
 <ctx>
 {context}
 </ctx>
@@ -75,24 +75,6 @@ You are to act like Ovsmart agent with 7 years experience in our products area. 
 {history}
 </hs>
 ------
-<example>
-Human : tell me specifications or information about solar batterizer pack
-AI : Product Name: 9.2Ah Solar Batterizer Pack (HS1A-118)
-    Specifications:
-    This CAMP™ Solar Shop Pack is a great seller and can be applied to a variety of 24V products. The 24V DC System Includes the following components:
-    
-    375W Solar Panel
-    48Ah Lithium Battery Hub
-    This product is suitable for the auxiliary power system of households and stores, and it can provide a basic power guarantee for a family. It offers reliable power supply for 24V DC products such as refrigerators, soya milk machines, and pasta mills.
-    
-    Additionally:
-    
-    This product is available on a PAYG (Pay-As-You-Go) basis.
-    It comes with a warranty.
-    It has been tested and certified to IEC TS 62257-9-8 quality standards.
-    For more detailed product specifications, please refer to the datasheet provided for this product.
-
-</example>
 {question}
 
 Answer:
