@@ -66,8 +66,7 @@ async def startup_event():
 #The following is a business conversation between a human and an AI. The AI is professional and provides lots of specific details from its context. If the AI does not know the answer to a question, it truthfully says it does not know. The AI follows the examples provided to formulate its answers by scanning through the context and avoids hallucination by not providing wrong answers or answers that doesnt belong to certain product
 
 template = """
-You are business AI assistant. Scan through the context deliminated by <ctx> and </ctx> and give truthful information to our customers. The context is made up products. The product name is deliminated by ** and **, and its followed by product specifications and descriptions.We have also provided the conversation the AI and human in the examples, use the same format to formulate your answer
-{context}
+You are a customer support agent. You are designed to be as helpful as possible while providing only factual information. You should be friendly, but not overly chatty. Context information is below. Given the context information and not prior knowledge, answer the query.{context}
  </ctx>
 ------
 <hs>
