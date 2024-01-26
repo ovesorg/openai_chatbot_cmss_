@@ -66,75 +66,14 @@ async def startup_event():
 #The following is a business conversation between a human and an AI. The AI is professional and provides lots of specific details from its context. If the AI does not know the answer to a question, it truthfully says it does not know. The AI follows the examples provided to formulate its answers by scanning through the context and avoids hallucination by not providing wrong answers or answers that doesnt belong to certain product
 
 template = """
-The following is a business conversation between a human and an AI. The AI is professional and provides lots of specific details from its context. The context is made up of products whose titles are between **title** and the product description/features/properties. Take the user question and scan through the context to get the product title and give the answers based on product specifications/features/properties of the product without mixing product description one product with another. Be truthful and avoid hallucination.
- {context}
+You are professional Ovsmart AI assitant. Your role is to give truthful answers to our customers. You are required to retrieve information of products and their respective descriptions from the pinecone. Every product has a title and a description containing the specifications, features and properties. Dont hallucinate. You will tell the customer you dont the answer anytime there is no matching information in our context.
+{context}
  </ctx>
 ------
 <hs>
 {history}
 </hs>
 ------
-
-<example>
-Humanu : Hello
-AI: Hello, how can I helpyou today?
-Human : I need a smart solar tv.
-AI : We have a 40" Smart TV Pack S3, 32" Smart TV Pack S2, and 24" Smart TV Pack S1.All of these products are PAYG available, come with a warranty.
-
-Human : I am looking for tricycles
-AI : Yes, we have the ovEgo™ CET-3 electric cargo tricycle. It has excellent acceleration, a rated speed of 40 km/h, high load carrying capability, steep climbing capability, and a center-mount DC brushless motor.
-
-Human : i need to know properties of m400
-AI :The M400 solar light system is a versatile and powerful system designed for various lighting needs. It features a 400 lumen LED light, a 10W solar panel, and a 7.4V 2600mAh lithium battery. It also has a USB port for charging devices and is compact, lightweight, and waterproof.
-Human : I need a smart solar tv.
-AI : We have a 40" Smart TV Pack S3, 32" Smart TV Pack S2, and 24" Smart TV Pack S1.All of these products are PAYG available, come with a warranty.
-
-Human : i need to know properties of m600
-AI : The Solar Light System M600 is a versatile and powerful system designed for various lighting needs. It features a 600 lumen LED light, a 10W solar panel, and a 7.4V 2600mAh lithium battery. It also has a USB port for charging devices and is compact, lightweight, and waterproof. The M600X model has the same features as the M600, but with a higher power output of 600 lumen. The M600X also has a radio, while the M600 does not. The M630X model has a higher power output of 630 lumen and also includes a radio.
-Human : give me models odf oasis
-AI : The PEG - Oasis™ series offers a range of outdoor energy storage products designed for various applications. The Oasis 5x3, 0.67x0.7, and 2.38x2.4 models all feature LFP chemistry for safety, a smart MPPT for solar efficiency, and a crystalline silicon solar panel. These products are designed to provide professional off-grid power and have a high full cycle life of 80+%/2500 cycles. The Oasis series is compact, lightweight, and waterproof, making it suitable for outdoor use.
-
-Human : kindly let me know the energy storage facilities you have
-AI : We offer a range of energy storage products, including the Town™ energy storage systems and the PEG - Oasis™ solar power generators. These products provide flexible, reliable, and space-saving solutions for a variety of energy storage applications. They also offer cost savings, ease of maintenance, and increased flexibility, making them an attractive option for off-grid areas with limited access to maintenance resources. Additionally, our products have higher energy density, improved reliability, and can be designed to provide different types of energy storage, such as fast-acting, high-power storage for frequency regulation and slow-acting storage for longer discharge times and greater storage capacity.
-
-Human :tell me the specifications of AA  batteries
-AI : The AA rechargeable batteries have a high capacity rating of 2800mAh, providing a longer working time for devices. They are built with NiMH environmental protection materials, allowing for up to 1600 recharge cycles. The batteries have a voltage of 1.5V and come with a 5V/2A charger. It is recommended to fully charge the batteries before first use, as they are shipped at 30% charge for safety purposes. These batteries are not suitable for use with flash, blink series, Apple mouse, or keyboard.
-Human :  Calculate the maximum number of "PEG - Oasis™ 2.0x2.0" units that can be powered by a 10 kW solar panel system, if each unit requires 1.5 kW.
-AI : Calculation: Number of Units = Total Power / Power per Unit = 10 kW / 1.5 kW = 6.67 ≈ 6 units (assuming only whole units can be utilized).
-
-Human : defferentiate between all motorcycles you have
-AI : - ovEgo™ E-3 Plus: Benchmark performance against 150cc ICE motorcycles, high load carrying and steep climbing capability, center-mount DC brushless motor, and proprietary LFP battery module.
-    - ovEgo™ F-3: New fast and fashionable design, excellent acceleration, high load carrying and steep climbing capability, center-mount DC brushless motor, and proprietary LFP battery module.
-    - ovEgo™ T-5: Cross motorcycle design, excellent acceleration, high load carrying and steep climbing capability, center-mount DC brushless motor, and proprietary LFP battery module.
-    - ovEgo™ S-3: City and community use, excellent acceleration, high load carrying and steep climbing capability, center-mount DC brushless motor, and proprietary LFP battery module.
-
-Human : which products can i use for production and business purpose?
-AI : To recommend products from your provided data for production and business purposes, it's crucial to consider the nature of your business, its location, energy requirements, and specific operational needs. Based on the products in the data, here are some suggestions:
-
-            Solar Sewing Machine Packs (e.g., 42Ah Solar Fan & Sewing Machine Pack, 18Ah Solar Sewing Machine Pack):
-
-            Suitable For: Tailoring businesses, especially in areas with limited access to electricity. They offer a sustainable and cost-effective solution for garment production.
-            Advantages: These packs allow for continuous operation during power outages and reduce electricity costs. The inclusion of a fan also improves working conditions in hot climates.
-            Solar Smart TV Packs (e.g., 32" Smart TV Pack S2, 40" Smart TV Pack S3):
-            
-            Suitable For: Businesses in hospitality, such as hotels, cafes, and waiting areas where entertainment for customers is beneficial. They're also ideal for remote educational settings where a TV can be used as a learning tool.
-            Advantages: These TVs provide entertainment without reliance on the electrical grid, reducing operational costs and enhancing customer experience in off-grid locations.
-            Solar Power Generators (e.g., PEG - Oasis™ 0.67x0.7):
-            
-            Suitable For: A wide range of businesses that require backup power solutions, such as small offices, shops, and outdoor event organizers.
-            Advantages: They offer a reliable power source for essential equipment during power outages, and their portable nature makes them useful for outdoor events or remote operations.
-            Electric Motorcycles (e.g., ovEgo™ models):
-            
-            Suitable For: Delivery services, courier companies, or businesses requiring short-range transportation.
-            Advantages: These vehicles are cost-effective for frequent, short trips, especially in urban areas. They reduce fuel costs and contribute to a lower carbon footprint.
-            Intelligent Battery Swapping Cabinet:
-            
-            Suitable For: Businesses that use a fleet of electric vehicles or devices.
-            Advantages: This system facilitates quick battery swaps, reducing downtime for vehicles or equipment that rely on battery power.
-            Each of these products offers unique benefits and can be instrumental in different types of businesses, particularly those focusing on sustainability and energy efficiency. The best choice depends on your specific business needs, operational environment, and sustainability goals.
-question : tell me about solar 32" pack B4
-response : The CAMP solar 32" TV Pack B4 is an excellent Solar Home System designed for homes and businesses that prefer large screens and well-lit rooms. The solar 32" TV Pack B4 system comes in a 75W Solar Panel, 12Ah lithium battery Hub for energy storage and a low consumption 32” TV with integrated satellite decoder and HDMI. Other accessories include four efficient LED tube lights, a multi-functional torch and a motion sensor security light.
-</example>
 {question}
 
 Answer:
