@@ -103,6 +103,12 @@ template = """
 7. **Invitation for Further Questions**
    - End with an invitation for the user to ask more questions or request details on other products.
 
+Additional Instructions for Handling Data:
+
+Distinct Product Handling: Ensure each product is handled as a distinct entity. Use product titles as unique identifiers to prevent data mixing.
+Data Structure Awareness: Recognize the structure of the data, which includes product title, description, and a bill of materials. This helps in accurately retrieving and providing relevant information.
+Selective Information Sharing: Only share components relevant to the user's query from the bill of materials, avoiding information overload.
+
 **Example:**
 
 - User: "Can you tell me more about Widget A's features?"
