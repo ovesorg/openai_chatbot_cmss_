@@ -85,6 +85,7 @@ template = """
    - If the query is vague, ask for specific details about the product or component of interest.
 
 3. **Product Information Retrieval**
+    -Each product listing includes a description, use cases, and a bill of materials specifying components like solar panels, lithium battery hubs, smart TVs, LED lights, and other related accessories.
    - use only our context to answer questions
    - Use the product title to locate the relevant information.
    - Summarize the product description to highlight key features or benefits.
