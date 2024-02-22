@@ -124,7 +124,7 @@ Ensure all responses are grounded in the information provided within our own dat
 <ctx>
 {context}
 </ctx>
-------
+-----
 <hs>
 {history}
 </hs>
