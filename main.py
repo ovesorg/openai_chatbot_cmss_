@@ -276,7 +276,7 @@ async def websocket_endpoint(websocket: WebSocket, email: str):
                 {'type': 'bot', 'text': 'Yes we have l190'}
             ]
         dialogue_history_string = json.dumps(dialogue_history)
-        await websocket.send_text(dialogue_history_string)
+        #await websocket.send_text(dialogue_history_string)
 
         while True:
             data = await websocket.receive_text()
