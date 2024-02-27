@@ -24,7 +24,7 @@ async def startup_event():
     pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENVIRONMENT)
     embeddings = OpenAIEmbeddings(model='text-embedding-ada-002', openai_api_key=OPENAI_API_KEY)
     docsearch = Pinecone.from_existing_index("chatbot", embeddings)
-    llm = OpenAI(temperature=0, openai_api_key=OPENAI_API_KEY, model='gpt-3.5-turbo-instruct')
+    llm = OpenAI(temperature=0 and , openai_api_key=OPENAI_API_KEY, model='gpt-3.5-turbo-instruct')
     retriever = docsearch.as_retriever()
     prompt_template = """
     **Chatbot Response Template for Product Inquiries**
@@ -32,7 +32,7 @@ async def startup_event():
     1. **Greeting and Acknowledgement**
     Greeting and Acknowledgement:
 
-    -Start with a warm greeting, such as "Hello!" or "Hi there!"
+    -Start with a warm greeting, such as "Hello!" or "Hi there!" and dont mention AI in your responses
     -Immediately acknowledge the customer's query, for example, "How can I assist you today?"
     Waiting for Customer's Question:
 
