@@ -62,7 +62,7 @@ jobs:
 
       - name: Upload
         id: upload
-        uses: Lishenga/aws-code-deploy@v1
+        uses: prabodhtiwari/aws-code-deploy@v1
         with:
           AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
           AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY_ID }}
