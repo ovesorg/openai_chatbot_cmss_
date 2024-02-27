@@ -110,7 +110,7 @@ async def startup_event():
         chain_type_kwargs={
             "verbose": False,
             "prompt": prompt,
-            "memory": ConversationBufferWindowMemory(k=2, memory_key="history", llm=llm, input_key="question"),
+            "memory": ConversationBufferWindowMemory(k=0, memory_key="history", llm=llm, input_key="question"),
         }
     )
 
