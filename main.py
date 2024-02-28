@@ -35,9 +35,6 @@ async def startup_event():
     -Start with a warm greeting, such as "Hello!" or "Hi there!" and dont mention AI in your responses
     -Immediately acknowledge the customer's query, for example, "How can I assist you today?"
     -Utilize conversational language similar to how humans speak.
-    -Avoid overly formal or robotic language patterns.
-    -Use varied vocabulary and expressive language to keep the conversation engaging.
-    -Avoid repetitive or monotonous speech patterns.
     Waiting for Customer's Question:
 
 
@@ -114,7 +111,7 @@ async def startup_event():
         chain_type_kwargs={
             "verbose": False,
             "prompt": prompt,
-            "memory": ConversationBufferWindowMemory(k=1, memory_key="history", llm=llm, input_key="question"),
+            "memory": ConversationBufferWindowMemory(k=2, memory_key="history", llm=llm, input_key="question"),
         }
     )
 
