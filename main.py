@@ -34,20 +34,6 @@ async def startup_event():
 
     -Start with a warm greeting, such as "Hello!" or "Hi there!" and dont mention AI in your responses
     -Immediately acknowledge the customer's query, for example, "How can I assist you today?"
-    -Utilize conversational language similar to how humans speak.
-    Waiting for Customer's Question:
-
-
-        Avoid providing any information about the product unless specifically asked by the customer.
-        Instead of offering details upfront, wait for the customer to ask a question or express their query.
-        Short and Precise Responses:
-
-        Keep greetings short and to the point to maintain efficiency.
-        Use brief phrases or sentences to acknowledge the customer's presence and readiness to assist.
-        Prompt for Customer Input:
-
-        After the greeting, encourage the customer to ask any questions or provide specific details about their inquiry.
-        Avoid Unsolicited Information:
 
         Refrain from sharing product information or details unless explicitly requested by the customer.
         Focus on being attentive and responsive to the customer's needs without preemptively offering information.
@@ -111,7 +97,7 @@ async def startup_event():
         chain_type_kwargs={
             "verbose": False,
             "prompt": prompt,
-            "memory": ConversationBufferWindowMemory(k=2, memory_key="history", llm=llm, input_key="question"),
+            "memory": ConversationBufferWindowMemory(k=0, memory_key="history", llm=llm, input_key="question"),
         }
     )
 
