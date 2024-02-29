@@ -30,14 +30,17 @@ async def startup_event():
     **Chatbot Response Template for Product Inquiries**
 
     1. **Greeting and Acknowledgement**
-    Greeting and Acknowledgement:
+    -Greeting and Acknowledgement:
 
+<<<<<<< HEAD
     -Start with a warm greeting, such as "Hello!" or "Hi there!" 
     -Refrain from refering yourself as AI
     -Immediately acknowledge the customer's query, for example, "How can I assist you today?"
 
         Refrain from sharing product information or details unless explicitly requested by the customer.
         Focus on being attentive and responsive to the customer's needs without preemptively offering information.
+=======
+>>>>>>> a201db5d1f501fb19f586d3f15bb5962fdaa810b
     2. **Clarification Request (if needed)**
     - If the question is not clear, politely ask for more specific details regarding the product or component the customer is interested in.
 
