@@ -88,7 +88,7 @@ async def startup_event():
     # """ 
 
     prompt_template = """
-    Given the following user prompt and conversation log, formulate a question that would be the most relevant to provide the user with an answer from a knowledge base.
+    Given the following user question, history and context, formulate a question that would be the most relevant to provide the user with an answer from a knowledge base.
     You should follow the following rules when generating and answer:
       - Always prioritize the user prompt over the conversation log.
       - Ignore any conversation log that is not directly related to the user prompt.
@@ -98,10 +98,17 @@ async def startup_event():
       - You should remove any words that are not relevant to the question.
       - If you are unable to formulate a question, respond with the same USER PROMPT you got.
 
-  USER PROMPT: {userPrompt}
+    <ctx>
+    {context}
+    </ctx>
+    -----
+    <hs>
+    {history}
+    </hs>
+    ------
+    {question}
 
-  CONVERSATION LOG: {conversationHistory}
-    Answer:"""
+    # Answer:"""
 
 
     
