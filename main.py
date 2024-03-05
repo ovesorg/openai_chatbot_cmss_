@@ -1,4 +1,4 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, Cookie, Request, Response
 from dotenv import load_dotenv
 from langchain import OpenAI
 from langchain.chains import RetrievalQA
@@ -10,11 +10,16 @@ import os
 import json
 import uvicorn
 import pinecone
+import logging
+from fastapi import Header
+import uuid
 load_dotenv()
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 PINECONE_API_KEY = "199b3561-863a-41a7-adfb-db5f55e505ac"
 PINECONE_ENVIRONMENT = "eu-west4-gcp"
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 app = FastAPI()
 
 @app.on_event("startup")
@@ -27,51 +32,17 @@ async def startup_event():
     llm = OpenAI(temperature=0, openai_api_key=OPENAI_API_KEY, model='gpt-3.5-turbo-instruct')
     retriever = docsearch.as_retriever()
     prompt_template = """
-    **Chatbot Response Template for Product Inquiries**
-
-    1. **Greeting and Acknowledgement**
-    -Greeting and Acknowledgement:
-    -Be short and precise 
-    -Dont include product information during greetings
-    2. **Clarification Request (if needed)**
-    - If the question is not clear, politely ask for more specific details regarding the product or component the customer is interested in.
-
-    3. **Product Information Retrieval**
-    - **Important:** Only use the domain knowledge and data provided within our database to answer questions. Do not refer to external sources for information.
-    - Locate the product's relevant information by using its title from our database.
-    - Summarize the product description, emphasizing its main features or benefits to address the query effectively.
-    - Select and mention components from the bill of materials that are relevant to the query, illustrating the product's build and design.
-    4. **Answer Structuring**
-    - Start your response by directly addressing the user's question based on the internal data available.
-    - Expand on the answer by incorporating details from the product's description and bill of materials.
-    - Allow users to lead the conversation while providing timely feedback and guidance.
-    5. **Contextual Explanation**
-    - Provide context on how certain features or components enhance the product's functionality, using only internal data for reference.
-
-    6. **Examples and Use Cases**
-    - When applicable, offer a brief example or use case to illuminate how the product can be utilized, drawing upon scenarios or applications documented in our database.
-
-    7. **Invitation for Further Questions**
-    - Conclude with an open invitation for the user to pose additional questions or express interest in other products, ensuring them of your readiness to assist with information strictly from our curated database.
-
-    8. **Response for Queries Beyond Our Knowledge Domain**
-    Should you inquire about a product or topic we don't have in our database, we will:
-
-    Acknowledge the gap: "It seems we don't have information on [Product Name] in our current database."
-    Express our limitations: "We're committed to providing reliable and consistent information based on our internal resources. Unfortunately, this means we're unable to provide details on products or topics outside our current catalog."
-    Encourage future engagement: "We regularly update our database with new products and information. Please check back with us in the future, as we may have what you're looking for at a later time."
-    Offer further assistance: "If you have questions about any other products or need assistance with a different inquiry, please let us know. We're here to help with any information available in our database."
-
-    **Additional Instructions for Handling Data:**
-
-    - **Distinct Product Handling:** Treat each product as a separate entity, utilizing product titles as unique identifiers to avoid confusion.
-    - **Data Structure Awareness:** Be mindful of the data's structure, which encompasses the product title, description, and bill of materials, to ensure information is accurately retrieved and communicated.
-    - **Selective Information Sharing:** Tailor your responses to include only those components from the bill of materials that directly relate to the user's inquiry, avoiding the dissemination of irrelevant or overwhelming information.
-
-    **Emphasis on Internal Data Use:**
-    Ensure all responses are grounded in the information provided within our own database. This approach guarantees that answers remain consistent with our brand's knowledge base and product catalog, reinforcing trust and reliability in our customer service.
-
-
+    Given the following user question, history and context, formulate a response that would be the most relevant to provide the user with an answer from a knowledge base.
+    You should follow the following rules when generating an answer:
+    - if the customer starts with greetings, ask him or her what you can help today
+    - Understand user question( synonyms), and specificity of the question and use your intelligence to understand the products information that the user is looking for.
+    - from the user question, scan through peoduct title, product description and other product features and extract exactly the right matching data. 
+    -after scanning the databse and you dont get the information that user asked from our own database, ask the user to try next time. Right now we dont have the information about what he is asking.
+    - strictly don't formulate answers for questions that ask for information that is not in our database
+    - you answer responses should **strictly** not be more than 25 words, the response should include technical specifications, uses cases and and parts from BOM 
+    - for a question that requires comparison, get the product information for each product and give truthful comparison, citing similarities and dont give misleading information here, restrict yourself to database infomation the products
+    - to formulate your answer, consider product titles, product description and other content in product only.
+    - in your answer formulation avoid mixing product information.
     <ctx>
     {context}
     </ctx>
@@ -82,8 +53,7 @@ async def startup_event():
     ------
     {question}
 
-    Answer:
-    """  # Ensure your template is defined correctly here
+    # Answer:"""
     prompt = PromptTemplate(input_variables=["history", "context", "question"], template=prompt_template, max_tokens=2000)
     qa = RetrievalQA.from_chain_type(
         llm=llm,
@@ -121,16 +91,81 @@ async def websocket_endpoint(websocket: WebSocket, email: str):
     except WebSocketDisconnect as e:
         print(f"WebSocket disconnected with code {e.code}: {e.reason}")
         # Perform any necessary cleanup or logging here
+user_contexts = {}
+
+# element_list = eval(f"{result_list}")
+
+#                 # Extract the last three elements
+#                 last_three_elements = element_list[-2:]
+
+
+#                 #print(chat_history)
+#                 # Prepare the query with context for embeddings
+#                 query_with_context = {
+#                     "context": last_three_elements,
+#                     "question": data,
+#                 }
+
+#                 # Convert the query to a string
+#                 query_string = json.dumps(query_with_context)
+
+#                 query_string = " ".join(query_string.split()[:2000])
+
+
+#                 # Broadcast the message to all participants in the chatroom
+#                 for participant in chatrooms[chatroom]:
+#                     if participant != websocket:
+#                         try:
+#                             response = qa.run(query_string)
 
 @app.post("/query/")
 async def get_response(query: str):
+    # element_list = {"question_1": "Hello","question_2": "I need tv","question_3": "how is your motorbikes"}
+    # query_with_context = {
+    #     "context": element_list,
+    #     "question": query,
+    # }
+    # print(query_with_context)
     if not query:
         raise HTTPException(status_code=400, detail="Query not provided")
     try:
-        response = qa.run({"query": query})
+        # query_string = json.dumps(query_with_context)
+        # query_string = " ".join(query_string.split()[:1000])
+        # print(query_string)
+        response = qa.run(query)
+        #response = qa.run({"query": query})
         return {"response": response}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing query: {str(e)}")
+# @app.post("/query/")
+# async def chatbot(request: Request, user_id: str = Cookie(None), message: str = None):
+#     if not user_id:
+#         # Generate a new UUID if user_id is not provided in the cookies
+#         user_id = str(uuid.uuid4())
+#         #response = qa.run({"query": message})
+#         responses = Response(content="Hello, Chatbot!")
+#         responses.set_cookie(key="user_id", value=user_id)
+#         logger.info(f"New user identified with ID: {user_id}")
+#         return responses
+
+#     # Get the user's conversation context from the dictionary
+#     context = user_contexts.get(user_id, [])
+#     response = qa.run({"query": message})
+#     return response
+
+#     # Process the message and update the conversation context
+#     if message:
+#         # Add the message to the user's conversation context
+#         context.append(message)
+#         # Update the conversation context in the dictionary
+#         user_contexts[user_id] = context
+#         logger.info(f"Message received from user {user_id}: {message}")
+
+#     # Return the user's conversation context
+#     logger.info(f"Returning conversation context for user {user_id}: {context}")
+#     return {"user_id": user_id, "conversation_context": context}
+
+
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8111)
+    uvicorn.run(app, host="127.0.0.1", port=8111)
