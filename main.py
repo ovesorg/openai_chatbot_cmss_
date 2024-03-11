@@ -50,6 +50,8 @@ async def startup_event():
     Generate responses based on products that we have on our websites only.
 
     Provide clear and concise answers to the user's queries regarding collections, product description, and description properties.
+
+    Dont use internet when formulating your answers
     <ctx>
     {context}
     </ctx>
