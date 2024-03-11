@@ -45,54 +45,11 @@ async def startup_event():
     
     Accuracy and Relevance: Carefully compile and summarize relevant information without mixing product details to provide customers with clear, concise answers.
 
+    from the website structure, use product, collection, product description, description properties.
 
-    Below is a treeview of our website architecture, follow it always when scanning the website
-    └── product
-    ├── id
-    ├── title
-    ├── vendor
-    ├── handle
-    ├── descriptionHtml
-    ├── description
-    ├── options
-    │   ├── name
-    │   └── values
-    ├── collections
-    │   └── nodes
-    │       └── id
-    ├── selectedVariant: variantBySelectedOptions
-    │   └── ...ProductVariantFragment
-    ├── mainMedia: metafields
-    │   ├── key
-    │   └── value
-    ├── additionalMedia: metafields
-    │   ├── key
-    │   └── value
-    ├── properties: metafields
-    │   ├── key
-    │   └── value
-    ├── items: metafields
-    │   ├── key
-    │   └── value
-    ├── productdescription: metafields
-    │   ├── key
-    │   └── value
-    ├── productproperty: metafield
-    │   └── references
-    │       └── ...MetaObjectContentFragment
-    ├── productBom: metafield
-    │   └── references
-    │       └── ...MetaObjectContentFragment
-    ├── media
-    │   └── nodes
-    │       └── ...Media
-    ├── variants
-    │   └── nodes
-    │       └── ...ProductVariantFragment
-    └── seo
-        ├── description
-        └── title
-  
+    Generate responses based on products that we have on our websites only.
+
+    Provide clear and concise answers to the user's queries regarding collections, product description, and description properties.
     <ctx>
     {context}
     </ctx>
