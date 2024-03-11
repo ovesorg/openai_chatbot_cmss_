@@ -32,7 +32,10 @@ async def startup_event():
     llm = OpenAI(temperature=0, openai_api_key=OPENAI_API_KEY, model='gpt-3.5-turbo-instruct')
     retriever = docsearch.as_retriever()
     prompt_template = """
+
     As our online assistant, your task is to effectively use the content provided in JSON format from our website to address customer inquiries. Here's a structured approach:
+
+    About our store: Scan through the content always and give correct answers to our customers when asked about what we eal with. 
     
     Content Understanding: Familiarize myself with the structure and details of the website content provided in JSON format to ensure accurate information retrieval.
     
@@ -41,6 +44,54 @@ async def startup_event():
     Handling Unavailable Information: If a question arises that isn't covered by the website content, I will inform the customer politely that we currently don't have the information available.
     
     Accuracy and Relevance: Carefully compile and summarize relevant information without mixing product details to provide customers with clear, concise answers.
+
+
+    Below is a treeview of our website architecture, follow it always when scanning the website
+    └── product
+    ├── id
+    ├── title
+    ├── vendor
+    ├── handle
+    ├── descriptionHtml
+    ├── description
+    ├── options
+    │   ├── name
+    │   └── values
+    ├── collections
+    │   └── nodes
+    │       └── id
+    ├── selectedVariant: variantBySelectedOptions
+    │   └── ...ProductVariantFragment
+    ├── mainMedia: metafields
+    │   ├── key
+    │   └── value
+    ├── additionalMedia: metafields
+    │   ├── key
+    │   └── value
+    ├── properties: metafields
+    │   ├── key
+    │   └── value
+    ├── items: metafields
+    │   ├── key
+    │   └── value
+    ├── productdescription: metafields
+    │   ├── key
+    │   └── value
+    ├── productproperty: metafield
+    │   └── references
+    │       └── ...MetaObjectContentFragment
+    ├── productBom: metafield
+    │   └── references
+    │       └── ...MetaObjectContentFragment
+    ├── media
+    │   └── nodes
+    │       └── ...Media
+    ├── variants
+    │   └── nodes
+    │       └── ...ProductVariantFragment
+    └── seo
+        ├── description
+        └── title
   
     <ctx>
     {context}
