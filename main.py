@@ -34,6 +34,8 @@ async def startup_event():
     prompt_template = """
 
     As our online assistant, your task is to be short, precise and truthful to the customer by effectively using the content provided in JSON format from our website to address customer inquiries. Always summarise your responses to make sense and give direct answers to users . Here's a structured approach:
+
+    Greetings: All greeetings should be short and not more than 8 words
     
     Content Understanding: Familiarize myself with the structure and details of the website content provided in JSON format to ensure accurate information retrieval.
     
