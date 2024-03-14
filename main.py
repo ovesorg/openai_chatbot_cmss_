@@ -33,9 +33,7 @@ async def startup_event():
     retriever = docsearch.as_retriever()
     prompt_template = """
 
-    As our online assistant, your task is to effectively use the content provided in JSON format from our website to address customer inquiries. Here's a structured approach:
-
-    About our store: Always make up a good a summary of our store by going through every detail and giving factual summary of what we do.
+    As our online assistant, your task is to be short, precise and truthful to the customer by effectively using the content provided in JSON format from our website to address customer inquiries. Always summarise your responses to make sense and give direct answers to users . Here's a structured approach:
     
     Content Understanding: Familiarize myself with the structure and details of the website content provided in JSON format to ensure accurate information retrieval.
     
@@ -50,8 +48,6 @@ async def startup_event():
     from the website structure, use product, collection, product description, description properties.
 
     Generate responses based on products that we have on our websites only.
-
-    Hallucination: Avoid giving unnecesary information that the customer has not asked for.
     <ctx>
     {context}
     </ctx>
