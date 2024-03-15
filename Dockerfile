@@ -1,8 +1,8 @@
 # Use an official Python runtime as the base image
-# FROM python:3.9
+FROM python:3.9
 #FROM alpine:latest
 #FROM python:3.9-alpine
-FROM python:3.9-slim AS builder
+#FROM python:3.9-slim AS builder
 
 #install python on top of alpine
 #RUN apk --no-cache add python3 py3-pip
