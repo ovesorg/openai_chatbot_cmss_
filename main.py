@@ -49,7 +49,10 @@ async def startup_event():
 
     from the website structure, use product, collection, product description, description properties.
 
-    Generate responses based on products that we have on our websites only.
+    We have also added articles from our websites that will give more insights about general information that might be asked by user,
+
+    Generate responses based on products and artices that we have on our websites only.
+    
     <ctx>
     {context}
     </ctx>
