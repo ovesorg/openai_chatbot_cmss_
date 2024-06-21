@@ -64,31 +64,7 @@ async def startup_event():
     {question}
 
      Answer:"""
-    # prompt_template = """
-    # Given the following user question, history and context, formulate a response that would be the most relevant to provide the user with an answer from a knowledge base.
-    # You should follow the following rules when generating an answer:
-    # - if the customer starts with greetings, ask him or her what you can help today
-    # - Understand user question( synonyms), and specificity of the question and use your intelligence to understand the products information that the user is looking for.
-    # - from the user question, scan through peoduct title, product description and other product features and extract exactly the right matching data. 
-    # -after scanning the databse and you dont get the information that user asked from our own database, ask the user to try next time. Right now we dont have the information about what he is asking.
-    # - strictly don't formulate answers for questions that ask for information that is not in our database
-    # - you answer responses should **strictly** not be more than 25 words, the response should include technical specifications, uses cases and and parts from BOM 
-    # - for a question that requires comparison, get the product information for each product and give truthful comparison, citing similarities and dont give misleading information here, restrict yourself to database infomation the products
-    # - to formulate your answer, consider product titles, product description and other content in product only.
-    # - in your answer formulation avoid mixing product information.
-    # -Don't use internet 
-
-    # <ctx>
-    # {context}
-    # </ctx>
-    # -----
-    # <hs>
-    # {history}
-    # </hs>
-    # ------
-    # {question}
-
-    #  Answer:"""
+    
     
     prompt = PromptTemplate(input_variables=["history", "context", "question"], template=prompt_template, max_tokens=2000)
     qa = RetrievalQA.from_chain_type(
@@ -129,31 +105,6 @@ async def websocket_endpoint(websocket: WebSocket, email: str):
         # Perform any necessary cleanup or logging here
 user_contexts = {}
 
-# element_list = eval(f"{result_list}")
-
-#                 # Extract the last three elements
-#                 last_three_elements = element_list[-2:]
-
-
-#                 #print(chat_history)
-#                 # Prepare the query with context for embeddings
-#                 query_with_context = {
-#                     "context": last_three_elements,
-#                     "question": data,
-#                 }
-
-#                 # Convert the query to a string
-#                 query_string = json.dumps(query_with_context)
-
-#                 query_string = " ".join(query_string.split()[:2000])
-
-
-#                 # Broadcast the message to all participants in the chatroom
-#                 for participant in chatrooms[chatroom]:
-#                     if participant != websocket:
-#                         try:
-#                             response = qa.run(query_string)
-
 @app.post("/query/")
 async def get_response(query: str):
     # element_list = {"question_1": "Hello","question_2": "I need tv","question_3": "how is your motorbikes"}
@@ -173,33 +124,6 @@ async def get_response(query: str):
         return {"response": response}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing query: {str(e)}")
-# @app.post("/query/")
-# async def chatbot(request: Request, user_id: str = Cookie(None), message: str = None):
-#     if not user_id:
-#         # Generate a new UUID if user_id is not provided in the cookies
-#         user_id = str(uuid.uuid4())
-#         #response = qa.run({"query": message})
-#         responses = Response(content="Hello, Chatbot!")
-#         responses.set_cookie(key="user_id", value=user_id)
-#         logger.info(f"New user identified with ID: {user_id}")
-#         return responses
-
-#     # Get the user's conversation context from the dictionary
-#     context = user_contexts.get(user_id, [])
-#     response = qa.run({"query": message})
-#     return response
-
-#     # Process the message and update the conversation context
-#     if message:
-#         # Add the message to the user's conversation context
-#         context.append(message)
-#         # Update the conversation context in the dictionary
-#         user_contexts[user_id] = context
-#         logger.info(f"Message received from user {user_id}: {message}")
-
-#     # Return the user's conversation context
-#     logger.info(f"Returning conversation context for user {user_id}: {context}")
-#     return {"user_id": user_id, "conversation_context": context}
 
 
 
