@@ -2,9 +2,6 @@
 
 sudo chown -R ubuntu:ubuntu /home/ubuntu
 cd /home/ubuntu/openai_chatbot_cmss_
-GITHUB_TOKEN=$1
-echo $GITHUB_TOKEN | docker login ghcr.io -u ovesorg --password-stdin
-
 # sudo docker-compose stop
 # sudo docker-compose rm -f
 # node dist/main
