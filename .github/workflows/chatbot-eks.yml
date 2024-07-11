@@ -58,11 +58,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: ['build-and-push-docker-image']
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout helm chart repository
+        uses: actions/checkout@v3
         with:
           repository: ovesorg/openai_chatbot_cmss_
           ref: 'fastapi'
           token: ${{ secrets.G_TOKEN }}
+
       - name: setup git config
         run: |
           git config --global user.email "webmaster@omnivoltaic.com"
@@ -79,8 +81,16 @@ jobs:
     runs-on: ubuntu-latest
     needs: ['update-manifest-stage']
     steps:
-      - name: Checkout code
+      - name: Checkout helm chart repository
         uses: actions/checkout@v3
+
+      - name: Setup kubectl
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+
+      - name: Print OpenAI API Key (Debug Step)
+        run: echo "${{ secrets.OPENAI_API_KEY }}"
 
       - name: Deploy to Kubernetes using Helm
         env:
@@ -88,5 +98,6 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
         run: |
-          helm upgrade --install chatbot ./charts --namespace chatbot-namespace -f ./charts/values.yaml --set image.tag=${IMAGE_TAG} --set openaiApiKey=${{ secrets.OPENAI_API_KEY }} --set pineconeApiKey=${{ secrets.PINECONE_API_KEY }}
+          helm upgrade --install chatbot ./charts --namespace chatbot-namespace -f ./charts/values.yaml --set image.tag=${IMAGE_TAG} --set openaiApiKey=${OPENAI_API_KEY} --set pineconeApiKey=${PINECONE_API_KEY}
+
 
