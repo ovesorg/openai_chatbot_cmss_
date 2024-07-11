@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chatbot-deployment
+  namespace: chatbot-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chatbot
+  template:
+    metadata:
+      labels:
+        app: chatbot
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret-oves
+      containers:
+        - name: chatbot-container
+          image: ghcr.io/ovesorg/chatbot:{{ .Values.image.tag }}
+          ports:
+            - containerPort: 80
+          env:
+            - name: OPENAI_API_KEY
+              value: {{ .Values.openaiApiKey | quote }}
+            - name: PINECONE_API_KEY
+              value: {{ .Values.pineconeApiKey | quote }}
+          resources:
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+
+
