@@ -17,6 +17,13 @@ Create a default fully qualified app name.
 {{- end -}}
 
 {{/*
+Expand the version of the chart.
+*/}}
+{{- define "chart.version" -}}
+{{- .Chart.Version -}}
+{{- end -}}
+
+{{/*
 Common labels
 */}}
 {{- define "chart.labels" -}}
