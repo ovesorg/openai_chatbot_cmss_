@@ -14,10 +14,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+
       - run: |
           rm -rf .git
 
@@ -35,11 +37,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Login to GitHub Packages
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.G_TOKEN }}
+        run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
@@ -63,7 +61,7 @@ jobs:
         with:
           repository: ovesorg/openai_chatbot_cmss_
           ref: 'fastapi'
-          token: ${{ secrets.G_TOKEN }}
+          token: ${{ secrets.GHCR_TOKEN }}
 
       - name: Setup git config
         run: |
