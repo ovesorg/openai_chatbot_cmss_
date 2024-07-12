@@ -49,3 +49,14 @@ Chart name and version
 {{- define "chart.chart" -}}
 {{- .Chart.Name }}-{{ .Chart.Version }}
 {{- end -}}
+
+{{/*
+Expand the name of the service account.
+*/}}
+{{- define "chart.serviceAccountName" -}}
+{{- if .Values.serviceAccount.name }}
+{{- .Values.serviceAccount.name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- include "chart.fullname" . }}
+{{- end -}}
+{{- end -}}
