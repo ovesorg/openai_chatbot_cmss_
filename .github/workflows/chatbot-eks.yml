@@ -70,6 +70,17 @@ jobs:
           echo ${{ github.sha }}
           cd charts
           sed -i "s#\(tag: \"\)[^\"]*\"#\1${{ github.sha }}\"#g" values.yaml
+
+      - name: Check for changes
+        id: git_diff
+        run: |
+          cd charts
+          git diff --exit-code || echo "changes"
+
+      - name: Commit and push changes
+        if: steps.git_diff.outputs.changes == 'changes'
+        run: |
+          cd charts
           git add -A
-          git commit -am "Update image for - ${{ github.sha }}"
-      - run: git push origin fastapi
+          git commit -m "Update image for - ${{ github.sha }}"
+          git push origin fastapi
