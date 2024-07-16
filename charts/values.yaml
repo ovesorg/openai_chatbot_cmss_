@@ -32,9 +32,9 @@ ingress:
     cert-manager.io/issuer: "letsencrypt-dev"
     kubernetes.io/tls-acme: "true"
   hosts:
-    - host: dev-chatbot.omnivoltaic.com
+    - host: ''
       paths:
-        - path: /
+        - path: 
           pathType: ImplementationSpecific
   tls:
     - secretName: chatbot-tls
