@@ -61,6 +61,6 @@ pineconeApiKey: "199b3561-863a-41a7-adfb-db5f55e505ac"
 autoscaling:
   enabled: true
   minReplicas: 1
-  maxReplicas: 10
+  maxReplicas: 9
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
