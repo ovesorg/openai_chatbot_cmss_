@@ -69,9 +69,14 @@ jobs:
         run: |
           git config --global user.email "webmaster@omnivoltaic.com"
           git config --global user.name "ovesorg"
-          echo ${{ github.sha }}
+      
+      - name: Update image tag in values.yaml
+        run: |
+          echo "Updating image tag in values.yaml to ${{ github.sha }}"
           cd charts
           sed -i "s#\(tag: \"\)[^\"]*\"#\1${{ github.sha }}\"#g" values.yaml
-          git add -A
-          git commit -am "Update image for - ${{ github.sha }}"
+          cat values.yaml  # Debug output to verify the change
+          git add values.yaml
+          git commit -m "Update image tag to ${{ github.sha }}"
+          
       - run: git push origin fastapi

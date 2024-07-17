@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: chatbot-app
+  name: chatbot
   namespace: argocd
 spec:
   project: default
