@@ -31,6 +31,8 @@ spec:
               value: {{ .Values.env.OPENAI_API_KEY | quote }}
             - name: PINECONE_API_KEY
               value: {{ .Values.env.PINECONE_API_KEY | quote }}
+            - name: PINECONE_ENVIRONMENT
+              value: {{ .Values.env.PINECONE_ENVIRONMENT | quote }}
           resources:
             limits:
               cpu: {{ .Values.resources.limits.cpu }}
@@ -38,7 +40,4 @@ spec:
             requests:
               cpu: {{ .Values.resources.requests.cpu }}
               memory: {{ .Values.resources.requests.memory }}
-      volumes:
-        - name: config-volume
-          configMap:
-            name: {{ include "chart.fullname" . }}-configmap
+
