@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: 'https://github.com/ovesorg/openai_chatbot_cmss_.git'
     targetRevision: fastapi
-    path: charts
+    path: charts/templates
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: chatbot-namespace

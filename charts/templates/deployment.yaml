@@ -4,13 +4,7 @@ metadata:
   name: {{ include "chart.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: {{ include "chart.name" . }}
-    helm.sh/chart: {{ include "chart.version" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-  annotations:
-    meta.helm.sh/release-name: {{ .Release.Name }}
-    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+    {{- include "chart.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -25,17 +19,18 @@ spec:
     spec:
       serviceAccountName: {{ include "chart.serviceAccountName" . }}
       imagePullSecrets:
-        - name: ghcr-secret-oves
+        - name: {{ .Values.imagePullSecrets | first }}
       containers:
-        - name: chart-container
+        - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 80
           env:
             - name: OPENAI_API_KEY
-              value: {{ .Values.openaiApiKey | quote }}
+              value: {{ .Values.env.OPENAI_API_KEY | quote }}
             - name: PINECONE_API_KEY
-              value: {{ .Values.pineconeApiKey | quote }}
+              value: {{ .Values.env.PINECONE_API_KEY | quote }}
           resources:
             limits:
               cpu: {{ .Values.resources.limits.cpu }}
@@ -43,75 +38,7 @@ spec:
             requests:
               cpu: {{ .Values.resources.requests.cpu }}
               memory: {{ .Values.resources.requests.memory }}
-
-
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: {{ include "chart.fullname" . }}
-#   labels:
-#     {{- include "chart.labels" . | nindent 4 }}
-# spec:
-#   {{- if not .Values.autoscaling.enabled }}
-#   replicas: {{ .Values.replicaCount }}
-#   {{- end }}
-#   selector:
-#     matchLabels:
-#       {{- include "chart.selectorLabels" . | nindent 6 }}
-#   template:
-#     metadata:
-#       {{- with .Values.podAnnotations }}
-#       annotations:
-#         {{- toYaml . | nindent 8 }}
-#       {{- end }}
-#       labels:
-#         {{- include "chart.labels" . | nindent 8 }}
-#         {{- with .Values.podLabels }}
-#         {{- toYaml . | nindent 8 }}
-#         {{- end }}
-#     spec:
-#       {{- with .Values.imagePullSecrets }}
-#       imagePullSecrets:
-#         {{- toYaml . | nindent 8 }}
-#       {{- end }}
-#       serviceAccountName: {{ include "chart.serviceAccountName" . }}
-#       securityContext:
-#         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-#       containers:
-#         - name: {{ .Chart.Name }}
-#           securityContext:
-#             {{- toYaml .Values.securityContext | nindent 12 }}
-#           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-#           imagePullPolicy: {{ .Values.image.pullPolicy }}
-#           ports:
-#             - name: http
-#               containerPort: {{ .Values.service.port }}
-#               protocol: TCP
-#           env:
-#             {{- toYaml .Values.env | nindent 12 }}
-#           livenessProbe:
-#             {{- toYaml .Values.livenessProbe | nindent 12 }}
-#           readinessProbe:
-#             {{- toYaml .Values.readinessProbe | nindent 12 }}
-#           resources:
-#             {{- toYaml .Values.resources | nindent 12 }}
-#           {{- with .Values.volumeMounts }}
-#           volumeMounts:
-#             {{- toYaml . | nindent 12 }}
-#           {{- end }}
-#       {{- with .Values.volumes }}
-#       volumes:
-#         {{- toYaml . | nindent 8 }}
-#       {{- end }}
-#       {{- with .Values.nodeSelector }}
-#       nodeSelector:
-#         {{- toYaml . | nindent 8 }}
-#       {{- end }}
-#       {{- with .Values.affinity }}
-#       affinity:
-#         {{- toYaml . | nindent 8 }}
-#       {{- end }}
-#       {{- with .Values.tolerations }}
-#       tolerations:
-#         {{- toYaml . | nindent 8 }}
-#       {{- end }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "chart.fullname" . }}-configmap
