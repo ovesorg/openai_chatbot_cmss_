@@ -84,7 +84,7 @@ jobs:
           sed -i "s#\(tag: \"\)[^\"]*\"#\1${{ github.sha }}\"#g" values.yaml
           cat values.yaml  # Debug output to verify the change
           git add values.yaml
-          git commit -m "Update image tag and secrets to ${{ github.sha }}"
+          git commit -m "Update image tag and secret to ${{ github.sha }}"
           
       - run: git push origin fastapi
 
