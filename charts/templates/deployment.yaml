@@ -25,17 +25,29 @@ spec:
     spec:
       serviceAccountName: {{ include "chart.serviceAccountName" . }}
       imagePullSecrets:
-        - name: ghcr-secret-oves
+        - name: {{ .Values.imagePullSecrets | first }}
       containers:
-        - name: chart-container
+        - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 80
           env:
             - name: OPENAI_API_KEY
-              value: {{ .Values.openaiApiKey | quote }}
+              valueFrom:
+                secretKeyRef:
+                  name: chatbot-secrets
+                  key: OPENAI_API_KEY
             - name: PINECONE_API_KEY
-              value: {{ .Values.pineconeApiKey | quote }}
+              valueFrom:
+                secretKeyRef:
+                  name: chatbot-secrets
+                  key: PINECONE_API_KEY
+            - name: PINECONE_ENVIRONMENT
+              valueFrom:
+                secretKeyRef:
+                  name: chatbot-secrets
+                  key: PINECONE_ENVIRONMENT
           resources:
             limits:
               cpu: {{ .Values.resources.limits.cpu }}

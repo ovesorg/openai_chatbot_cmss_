@@ -23,7 +23,6 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
-
 ingress:
   enabled: true
   className: ""
@@ -32,9 +31,9 @@ ingress:
     cert-manager.io/issuer: "letsencrypt-dev"
     kubernetes.io/tls-acme: "true"
   hosts:
-    - host: ''
+    - host: dev-chatbot.omnivoltaic.com
       paths:
-        - path: 
+        - path: /
           pathType: ImplementationSpecific
   tls:
     - secretName: chatbot-tls
@@ -58,10 +57,8 @@ affinity: {}
 env:
   OPENAI_API_KEY: "PLACEHOLDER_OPENAI_API_KEY"
   PINECONE_API_KEY: "PLACEHOLDER_PINECONE_API_KEY"
-  PINECONE_ENVIRONMENT: "eu-west4-gcp"
+  PINECONE_ENVIRONMENT: "PLACEHOLDER_PINECONE_ENVIRONMENT"
 
-  
-  
 autoscaling:
   enabled: true
   minReplicas: 1
