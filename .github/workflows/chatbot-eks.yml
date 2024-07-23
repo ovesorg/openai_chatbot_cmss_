@@ -20,9 +20,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - run: |
-          rm -rf .git
-
   build-and-push-docker-image:
     name: Build Docker image and push to GitHub Packages
     runs-on: ubuntu-latest
@@ -72,19 +69,20 @@ jobs:
           git config --global user.email "webmaster@omnivoltaic.com"
           git config --global user.name "ovesorg"
       
-      - name: Update image tag and secrets in values.yaml
+      - name: Update image tag and placeholders in values.yaml
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
+          PINECONE_ENVIRONMENT: ${{ secrets.PINECONE_ENVIRONMENT }}
         run: |
-          echo "Updating image tag and secrets in values.yaml to ${{ github.sha }}"
+          echo "Updating image tag and placeholders in values.yaml to ${{ github.sha }}"
           cd charts
           sed -i "s#PLACEHOLDER_OPENAI_API_KEY#${{ secrets.OPENAI_API_KEY }}#g" values.yaml
           sed -i "s#PLACEHOLDER_PINECONE_API_KEY#${{ secrets.PINECONE_API_KEY }}#g" values.yaml
+          sed -i "s#PLACEHOLDER_PINECONE_ENVIRONMENT#${{ secrets.PINECONE_ENVIRONMENT }}#g" values.yaml
           sed -i "s#\(tag: \"\)[^\"]*\"#\1${{ github.sha }}\"#g" values.yaml
           cat values.yaml  # Debug output to verify the change
           git add values.yaml
-          git commit -m "Update image tag and secret to ${{ github.sha }}"
+          git commit -m "Update image tag and placeholders to ${{ github.sha }}"
           
       - run: git push origin fastapi
-
