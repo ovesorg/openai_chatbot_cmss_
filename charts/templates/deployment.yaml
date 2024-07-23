@@ -4,7 +4,13 @@ metadata:
   name: {{ include "chart.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "chart.labels" . | nindent 4 }}
+    app.kubernetes.io/name: {{ include "chart.name" . }}
+    helm.sh/chart: {{ include "chart.version" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}
+    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -19,20 +25,17 @@ spec:
     spec:
       serviceAccountName: {{ include "chart.serviceAccountName" . }}
       imagePullSecrets:
-        - name: {{ .Values.imagePullSecrets | first }}
+        - name: ghcr-secret-oves
       containers:
-        - name: {{ .Chart.Name }}
+        - name: chart-container
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 80
           env:
             - name: OPENAI_API_KEY
-              value: {{ .Values.env.OPENAI_API_KEY | quote }}
+              value: {{ .Values.openaiApiKey | quote }}
             - name: PINECONE_API_KEY
-              value: {{ .Values.env.PINECONE_API_KEY | quote }}
-            - name: PINECONE_ENVIRONMENT
-              value: {{ .Values.env.PINECONE_ENVIRONMENT | quote }}
+              value: {{ .Values.pineconeApiKey | quote }}
           resources:
             limits:
               cpu: {{ .Values.resources.limits.cpu }}
@@ -40,4 +43,3 @@ spec:
             requests:
               cpu: {{ .Values.resources.requests.cpu }}
               memory: {{ .Values.resources.requests.memory }}
-
