@@ -14,7 +14,7 @@ import logging
 from fastapi import Header
 import uuid
 load_dotenv()
-OPENAI_API_KEY = "sk-None-fAAsAI14AZtiVkIs7JAoT3BlbkFJJ8HC00OhnR6Hit2Z8tob" #os.getenv('OPENAI_API_KEY')
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 PINECONE_API_KEY = "199b3561-863a-41a7-adfb-db5f55e505ac"
 PINECONE_ENVIRONMENT = "eu-west4-gcp"
 
