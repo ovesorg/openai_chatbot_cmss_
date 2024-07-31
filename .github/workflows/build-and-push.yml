@@ -22,6 +22,7 @@ jobs:
     name: build and deploy on staging
     steps:
       - uses: actions/checkout@v2
+      
 
   build-push-image-and-codedeploy:
     runs-on: ubuntu-latest
