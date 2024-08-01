@@ -9,14 +9,25 @@ from langchain import PromptTemplate
 import os
 import json
 import uvicorn
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
+from dotenv import load_dotenv
+from langchain import OpenAI
+from langchain.chains import RetrievalQA
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.chains.conversation.memory import ConversationBufferWindowMemory
+from langchain.vectorstores import Pinecone
+from langchain import PromptTemplate
+import os
+import json
+import uvicorn
 import pinecone
 import logging
-from fastapi import Header
-import uuid
+from langchain.chat_models import ChatOpenAI  # Use chat models
+
 load_dotenv()
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-PINECONE_API_KEY = "199b3561-863a-41a7-adfb-db5f55e505ac"
-PINECONE_ENVIRONMENT = "eu-west4-gcp"
+PINECONE_API_KEY = os.getenv('PINECONE_API_KEY')
+PINECONE_ENVIRONMENT = os.getenv('PINECONE_ENVIRONMENT')
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -29,29 +40,28 @@ async def startup_event():
     pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENVIRONMENT)
     embeddings = OpenAIEmbeddings(model='text-embedding-ada-002', openai_api_key=OPENAI_API_KEY)
     docsearch = Pinecone.from_existing_index("chatbot", embeddings)
-    llm = OpenAI(temperature=0, openai_api_key=OPENAI_API_KEY, model='gpt-3.5-turbo-instruct')
+    llm = ChatOpenAI(temperature=0, openai_api_key=OPENAI_API_KEY, model='gpt-3.5-turbo')  # Use ChatOpenAI
     retriever = docsearch.as_retriever()
     prompt_template = """
+    As our online assistant, your task is to be short, precise, and truthful to the customer by effectively using the content provided in JSON format from our website to address customer inquiries. Always summarize your responses to make sense and give direct answers to users. Here's a structured approach:
 
-    As our online assistant, your task is to be short, precise and truthful to the customer by effectively using the content provided in JSON format from our website to address customer inquiries. Always summarise your responses to make sense and give direct answers to users . Here's a structured approach:
+    Greetings: Give short and precise answers when customers greet. Don't add any information that the customer has not asked.
 
-    Greetings: Give short and precise answers when customers greet. Dont add any information that the customer has not asked 
-    
-    Content Understanding: Familiarize myself with the structure and details of the website content provided in JSON format to ensure accurate information retrieval.
-    
+    Content Understanding: Familiarize yourself with the structure and details of the website content provided in JSON format to ensure accurate information retrieval.
+
     Answering Inquiries: Utilize the website content to respond to user questions, ensuring responses are based solely on the provided information.
-    
-    Handling Unavailable Information: If a question arises that isn't covered by the website content, I will inform the customer politely that we currently don't have the information available.
+
+    Handling Unavailable Information: If a question arises that isn't covered by the website content, inform the customer politely that we currently don't have the information available.
 
     Ensure Precision and Pertinence: Many of our products bear names that are closely related, yet they exhibit significant distinctions. It is imperative that you exercise diligence to avoid conflating information between products. Your task is to meticulously gather and distill relevant data, ensuring that the insights provided to customers are unambiguous and succinct, thereby preventing any confusion stemming from product mix-ups.
-    
+
     Accuracy and Relevance: Carefully compile and summarize relevant information without mixing product details to provide customers with clear, concise answers.
 
     from the website structure, use product, collection, product description, description properties.
 
-    We have also added articles from our websites that will give more insights about general information that might be asked by user,
+    We have also added articles from our websites that will give more insights about general information that might be asked by users,
 
-    Generate responses based on products and artices that we have on our websites only.
+    Generate responses based on products and articles that we have on our websites only.
     
     <ctx>
     {context}
@@ -63,8 +73,7 @@ async def startup_event():
     ------
     {question}
 
-     Answer:"""
-    
+    Answer:"""
     
     prompt = PromptTemplate(input_variables=["history", "context", "question"], template=prompt_template, max_tokens=2000)
     qa = RetrievalQA.from_chain_type(
@@ -103,29 +112,16 @@ async def websocket_endpoint(websocket: WebSocket, email: str):
     except WebSocketDisconnect as e:
         print(f"WebSocket disconnected with code {e.code}: {e.reason}")
         # Perform any necessary cleanup or logging here
-user_contexts = {}
 
 @app.post("/query/")
 async def get_response(query: str):
-    # element_list = {"question_1": "Hello","question_2": "I need tv","question_3": "how is your motorbikes"}
-    # query_with_context = {
-    #     "context": element_list,
-    #     "question": query,
-    # }
-    # print(query_with_context)
     if not query:
         raise HTTPException(status_code=400, detail="Query not provided")
     try:
-        # query_string = json.dumps(query_with_context)
-        # query_string = " ".join(query_string.split()[:1000])
-        # print(query_string)
         response = qa.run(query)
-        #response = qa.run({"query": query})
         return {"response": response}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing query: {str(e)}")
-
-
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8111)

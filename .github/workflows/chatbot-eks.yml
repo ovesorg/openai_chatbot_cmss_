@@ -49,7 +49,4 @@ jobs:
             echo "No changes to commit"
           fi
 
-      - name: Deploy with Helm
-        run: |
-          helm upgrade --install chatbot ./charts --namespace chatbot-namespace -f ./charts/values.yaml
 
