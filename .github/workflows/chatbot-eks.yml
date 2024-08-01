@@ -92,28 +92,4 @@ jobs:
             git push origin fastapi
           else
             echo "No changes to commit"
-      
-  deploy:
-    runs-on: ubuntu-latest
-    needs: update-manifest-stage
-    steps:
-      - name: Checkout helm chart repository
-        uses: actions/checkout@v3
-        with:
-          repository: ovesorg/openai_chatbot_cmss_
-          ref: 'fastapi'
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set up Kubernetes
-        uses: azure/setup-kubectl@v1
-        with:
-          version: 'latest'
-
-      - name: Set up Helm
-        uses: azure/setup-helm@v1
-        with:
-          version: 'latest'
-
-      - name: Deploy to Argo CD
-        run: |
-          argocd app sync chatbot-app --prune --timeout 600
