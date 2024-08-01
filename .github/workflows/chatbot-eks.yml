@@ -86,7 +86,7 @@ jobs:
       - name: Commit and push changes if any
         run: |
           cd charts
-          if [[ `git status --porcelain` ]]; then
+          if [ -n "$(git status --porcelain)" ]; then
             git add values.yaml
             git commit -m "Update image tag and placeholders to ${{ github.sha }}"
             git push origin fastapi
@@ -107,5 +107,6 @@ jobs:
       - name: Upgrade Helm release
         run: |
           helm upgrade --install chatbot ./charts --namespace chatbot-namespace -f ./charts/values.yaml
+
 
       
