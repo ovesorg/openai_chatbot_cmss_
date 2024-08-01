@@ -92,3 +92,17 @@ jobs:
             git push origin fastapi
           else
             echo "No changes to commit"
+
+      - name: Deploy with kubectl
+        uses: azure/k8s-deploy@v3
+        with:
+          action: deploy
+          manifests: |
+            charts/deployment.yaml
+            charts/service.yaml
+          images: ghcr.io/ovesorg/chatbot:${{ github.sha }}
+          namespace: chatbot-namespace
+          enable-helm: true
+          helm-release: chatbot
+          helm-chart: ./charts
+          helm-values: ./charts/values.yaml
