@@ -29,8 +29,7 @@ async def startup_event():
     pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENVIRONMENT)
     embeddings = OpenAIEmbeddings(model='text-embedding-ada-002', openai_api_key=OPENAI_API_KEY)
     docsearch = Pinecone.from_existing_index("chatbot", embeddings)
-    # Ensure correct usage of the gpt-3.5-turbo-instruct model
-    llm = OpenAI(temperature=0, openai_api_key=OPENAI_API_KEY, model='gpt-3.5-turbo-instruct', api_base="https://api.openai.com/v1/chat/completions") 
+    llm = OpenAI(temperature=0, openai_api_key=OPENAI_API_KEY, model='gpt-3.5-turbo')
     retriever = docsearch.as_retriever()
     prompt_template = """
 
@@ -108,13 +107,25 @@ user_contexts = {}
 
 @app.post("/query/")
 async def get_response(query: str):
+    # element_list = {"question_1": "Hello","question_2": "I need tv","question_3": "how is your motorbikes"}
+    # query_with_context = {
+    #     "context": element_list,
+    #     "question": query,
+    # }
+    # print(query_with_context)
     if not query:
         raise HTTPException(status_code=400, detail="Query not provided")
     try:
+        # query_string = json.dumps(query_with_context)
+        # query_string = " ".join(query_string.split()[:1000])
+        # print(query_string)
         response = qa.run(query)
+        #response = qa.run({"query": query})
         return {"response": response}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing query: {str(e)}")
+
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8111)
