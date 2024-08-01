@@ -83,4 +83,29 @@ jobs:
           sed -i "s#\(tag: \"\)[^\"]*\"#\1${{ github.sha }}\"#g" values.yaml
           cat values.yaml  # Debug output to verify the change
 
+      - name: Commit and push changes if any
+        run: |
+          cd charts
+          if [[ `git status --porcelain` ]]; then
+            git add values.yaml
+            git commit -m "Update image tag and placeholders to ${{ github.sha }}"
+            git push origin fastapi
+          else
+            echo "No changes to commit"
+
+  helm-upgrade:
+    runs-on: ubuntu-latest
+    needs: update-manifest-stage
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          repository: ovesorg/openai_chatbot_cmss_
+          ref: 'fastapi'
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upgrade Helm release
+        run: |
+          helm upgrade --install chatbot ./charts --namespace chatbot-namespace -f ./charts/values.yaml
+
       
