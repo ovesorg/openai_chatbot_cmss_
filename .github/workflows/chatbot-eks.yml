@@ -68,7 +68,7 @@ jobs:
         run: |
           git config --global user.email "webmaster@omnivoltaic.com"
           git config --global user.name "ovesorg"
-      
+
       - name: Update image tag and placeholders in values.yaml
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -92,4 +92,3 @@ jobs:
             git push origin fastapi
           else
             echo "No changes to commit"
-
