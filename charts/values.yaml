@@ -13,14 +13,9 @@ service:
   port: 80
 
 serviceAccount:
-  # Specifies whether a service account should be created
   create: true
-  # Automatically mount a ServiceAccount's API credentials?
   automount: true
-  # Annotations to add to the service account
   annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
   name: ""
 
 ingress:
@@ -55,9 +50,21 @@ tolerations: []
 affinity: {}
 
 env:
-  OPENAI_API_KEY: "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"
-  PINECONE_API_KEY: "199b3561-863a-41a7-adfb-db5f55e505ac"
-  PINECONE_ENVIRONMENT: "eu-west4-gcp"
+  - name: OPENAI_API_KEY
+    valueFrom:
+      secretKeyRef:
+        name: chatbot-secrets
+        key: OPENAI_API_KEY
+  - name: PINECONE_API_KEY
+    valueFrom:
+      secretKeyRef:
+        name: chatbot-secrets
+        key: PINECONE_API_KEY
+  - name: PINECONE_ENVIRONMENT
+    valueFrom:
+      secretKeyRef:
+        name: chatbot-secrets
+        key: PINECONE_ENVIRONMENT
 
 autoscaling:
   enabled: true
@@ -65,3 +72,4 @@ autoscaling:
   maxReplicas: 7
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
+
