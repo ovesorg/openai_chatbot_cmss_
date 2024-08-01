@@ -90,8 +90,7 @@ jobs:
             git add values.yaml
             git commit -m "Update image tag and placeholders to ${{ github.sha }}"
             git push origin fastapi
-          else
-            echo "No changes to commit"
+          
 
   helm-upgrade:
     runs-on: ubuntu-latest
